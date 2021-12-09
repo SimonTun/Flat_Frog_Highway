@@ -1,28 +1,32 @@
 public class Frog {
-    private int y;
-    private int x;
+
+    public Position position;
     private char model;
 
-    public Frog(int y, int x, char model) {
-        this.y = y;
-        this.x = x;
+    public Frog(Position position, char model) {
+        this.position = position;
         this.model = model;
     }
 
     public int getX() {
-        return x;
+        return position.getX();
     }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
     public int getY() {
-        return y;
+        return position.getY();
+            }
+    public void setX(int x) {
+        position.setX(x);
+    }
+    public void setY(int y) {
+        position.setY(position.getY()-y);
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public char getModel() {
@@ -32,4 +36,14 @@ public class Frog {
     public void setModel(char model) {
         this.model = model;
     }
+
+    public boolean hasReachedGoal() {
+
+//        if ()
+
+
+        return true;
+    }
+
+
 }

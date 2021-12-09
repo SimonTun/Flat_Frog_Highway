@@ -4,14 +4,18 @@ import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 import static java.awt.SystemColor.text;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+        int terminalWidth = 100;
+        int terminalHeight = 50;
 
-        TerminalSize ts = new TerminalSize(100,  50 );
+
+        TerminalSize ts = new TerminalSize(terminalWidth,  terminalHeight );
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         terminalFactory.setInitialTerminalSize(ts);
         Terminal terminal = terminalFactory.createTerminal();
@@ -24,24 +28,34 @@ public class Main {
 //        terminal.putCharacter('A');
 //        terminal.flush();
 
-        Frog frog = new Frog(50,50 ,'F');
+        Frog frog = new Frog(new Position(50,50),'F');
 //        int x = 10;
 //        int y = 10;
 //        final char player = 'X';
-        final char block = '\u2588';
+        final char block = '-';
 
         terminal.setCursorPosition(frog.getX(), frog.getY());
         terminal.putCharacter(frog.getModel());
 
+//        drawString(x, y, "########   #######  ###   ###########   ###    ##    #######", Color.CYAN);
+
         //Create array
-        Position[] obstacles = new Position[10];
-        for (int i = 0; i < obstacles.length; i++) {
-            obstacles[i] = new Position(i + 5, 11);
+        Position[] roadSideDown = new Position[terminalWidth];
+        Position[] roadSideUp = new Position[terminalWidth];
+        for (int i = 0; i < terminalWidth; i++) {
+            roadSideUp[i] = new Position(i, 10);
+            roadSideDown[i] = new Position(i, 40);
         }
 
         //Print obstacles
 
-        for (Position p : obstacles) {
+        for (Position p : roadSideDown) {
+            terminal.setCursorPosition(p.x, p.y);
+            terminal.putCharacter(block);
+        }
+        terminal.flush();
+
+        for (Position p : roadSideUp) {
             terminal.setCursorPosition(p.x, p.y);
             terminal.putCharacter(block);
         }
@@ -62,7 +76,8 @@ public class Main {
 //            Character c = keyStroke.getCharacter(); // used for exit the loop when enter 'q'
 
             switch (keyStroke.getKeyType()) {
-                case ArrowUp -> frog.setY(frog.getY()-1);
+//                case ArrowUp -> frog.setPosition().setfrog.getY()-1);
+                case ArrowUp -> frog.position.setX(1);
                 case ArrowDown -> frog.setY(frog.getY()+1);
                 case ArrowRight -> frog.setX(frog.getY()+1);
                 case ArrowLeft -> frog.setX(frog.getY()-1);
@@ -79,8 +94,8 @@ public class Main {
 //                terminal.close();
 //            }
             boolean isCrash = false;
-            for (Position p : obstacles) {
-                if (p.x == frog.getX() && p.y == frog.getY()) {
+            for (Position p : roadSideUp) {
+                if (p.x == frog.getp() && p.y == frog.getY()) {
                     isCrash = true;
 
                 }
@@ -92,7 +107,7 @@ public class Main {
 
             terminal.setCursorPosition(oldX, oldY);
             terminal.putCharacter(' ');
-            terminal.setCursorPosition(frog.getX(), frog.getY());
+            terminal.setCursorPosition(frog.getp(), frog.getY());
             terminal.putCharacter(frog.getModel());
             terminal.flush();
 
