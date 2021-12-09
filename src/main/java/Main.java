@@ -1,3 +1,4 @@
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -9,23 +10,28 @@ import static java.awt.SystemColor.text;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+
+        TerminalSize ts = new TerminalSize(100,  50 );
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
+        terminalFactory.setInitialTerminalSize(ts);
         Terminal terminal = terminalFactory.createTerminal();
         terminal.setCursorVisible(false);
+
+
 
 
 //        terminal.setCursorPosition(1, 8);
 //        terminal.putCharacter('A');
 //        terminal.flush();
 
-
-        int x = 10;
-        int y = 10;
-        final char player = 'X';
+        Frog frog = new Frog(50,50 ,'F');
+//        int x = 10;
+//        int y = 10;
+//        final char player = 'X';
         final char block = '\u2588';
 
-        terminal.setCursorPosition(x, y);
-        terminal.putCharacter(player);
+        terminal.setCursorPosition(frog.getX(), frog.getY());
+        terminal.putCharacter(frog.getModel());
 
         //Create array
         Position[] obstacles = new Position[10];
@@ -44,8 +50,8 @@ public class Main {
         boolean continueReadingInput = true;
 
         while (continueReadingInput) {
-            int oldX = x;
-            int oldY = y;
+            int oldX = frog.getX();
+            int oldY = frog.getY();
 
             KeyStroke keyStroke = null;
             do {
@@ -56,10 +62,10 @@ public class Main {
 //            Character c = keyStroke.getCharacter(); // used for exit the loop when enter 'q'
 
             switch (keyStroke.getKeyType()) {
-                case ArrowUp -> y -= 1;
-                case ArrowDown -> y += 1;
-                case ArrowRight -> x += 1;
-                case ArrowLeft -> x -= 1;
+                case ArrowUp -> frog.setY(frog.getY()-1);
+                case ArrowDown -> frog.setY(frog.getY()+1);
+                case ArrowRight -> frog.setX(frog.getY()+1);
+                case ArrowLeft -> frog.setX(frog.getY()-1);
                 default -> {
                     System.out.println("Quitting");
                     continueReadingInput = false;
@@ -74,20 +80,20 @@ public class Main {
 //            }
             boolean isCrash = false;
             for (Position p : obstacles) {
-                if (p.x == x && p.y == y) {
+                if (p.x == frog.getX() && p.y == frog.getY()) {
                     isCrash = true;
 
                 }
             }
             if (isCrash) {
-                x = oldX;
-                y = oldY;
+                frog.setX(oldX);
+                frog.setY(oldY);
             }
 
             terminal.setCursorPosition(oldX, oldY);
             terminal.putCharacter(' ');
-            terminal.setCursorPosition(x, y);
-            terminal.putCharacter(player);
+            terminal.setCursorPosition(frog.getX(), frog.getY());
+            terminal.putCharacter(frog.getModel());
             terminal.flush();
 
 
