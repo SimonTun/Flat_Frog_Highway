@@ -1,86 +1,73 @@
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
-import java.awt.*;
-import java.util.ArrayList;
-
-import static java.awt.SystemColor.text;
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         int terminalWidth = 100;
         int terminalHeight = 50;
 
-
-        TerminalSize ts = new TerminalSize(terminalWidth,  terminalHeight );
+        TerminalSize ts = new TerminalSize(terminalWidth, terminalHeight);
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         terminalFactory.setInitialTerminalSize(ts);
         Terminal terminal = terminalFactory.createTerminal();
         terminal.setCursorVisible(false);
 
-
-
-
-//        terminal.setCursorPosition(1, 8);
-//        terminal.putCharacter('A');
-//        terminal.flush();
-
-        Frog frog = new Frog(new Position(50,50),'F');
-//        int x = 10;
-//        int y = 10;
-//        final char player = 'X';
+        Frog frog = new Frog(new Position(50, 50), 'F');
         final char block = '-';
 
-        terminal.setCursorPosition(frog.getX(), frog.getY());
+        terminal.setCursorPosition(frog.getPosition().getX(), frog.getPosition().getY());
         terminal.putCharacter(frog.getModel());
-
-//        drawString(x, y, "########   #######  ###   ###########   ###    ##    #######", Color.CYAN);
 
         //Create array
         Position[] roadSideDown = new Position[terminalWidth];
         Position[] roadSideUp = new Position[terminalWidth];
         for (int i = 0; i < terminalWidth; i++) {
-            roadSideUp[i] = new Position(i, 10);
-            roadSideDown[i] = new Position(i, 40);
+            roadSideUp[i] = new Position(10, i);
+            roadSideDown[i] = new Position(40, i);
         }
 
-        //Print obstacles
-
+        //Print vägen
         for (Position p : roadSideDown) {
-            terminal.setCursorPosition(p.x, p.y);
+            terminal.setCursorPosition(p.getX(), p.getY());
             terminal.putCharacter(block);
         }
         terminal.flush();
-
         for (Position p : roadSideUp) {
-            terminal.setCursorPosition(p.x, p.y);
+            terminal.setCursorPosition(p.getX(), p.getY());
             terminal.putCharacter(block);
         }
+
+        Car car1 = new Car(new Position((terminalHeight / 2),terminalWidth),'C');
+        terminal.setCursorPosition(car1.getPosition().getX(),car1.getPosition().getY());
+        terminal.putCharacter(car1.getModel());
         terminal.flush();
 
         boolean continueReadingInput = true;
-
         while (continueReadingInput) {
-            int oldX = frog.getX();
-            int oldY = frog.getY();
+            int oldX = frog.getPosition().getX();
+            int oldY = frog.getPosition().getY();
 
+//            KEYSTROKE-LOOPEN BÖRJAR HÄR
+            int index = 0;
             KeyStroke keyStroke = null;
             do {
+                index++;
+                if (index % 10 == 0) {
+                    moveCarLeft(car1, car1.getPosition(), terminal);
+                }
                 Thread.sleep(5); // might throw InterruptedException
                 keyStroke = terminal.pollInput();
             } while (keyStroke == null);
 
-//            Character c = keyStroke.getCharacter(); // used for exit the loop when enter 'q'
-
             switch (keyStroke.getKeyType()) {
-//                case ArrowUp -> frog.setPosition().setfrog.getY()-1);
-                case ArrowUp -> frog.position.setX(1);
-                case ArrowDown -> frog.setY(frog.getY()+1);
-                case ArrowRight -> frog.setX(frog.getY()+1);
-                case ArrowLeft -> frog.setX(frog.getY()-1);
+                case ArrowUp -> frog.moveUp();
+                case ArrowDown -> frog.moveDown();
+                case ArrowRight -> frog.moveRight();
+                case ArrowLeft -> frog.moveLeft();
                 default -> {
                     System.out.println("Quitting");
                     continueReadingInput = false;
@@ -93,94 +80,56 @@ public class Main {
 //                System.out.println("Quit");
 //                terminal.close();
 //            }
+
+            int currentX = frog.getPosition().getX();
+            int currentY = frog.getPosition().getY();
+
             boolean isCrash = false;
             for (Position p : roadSideUp) {
-                if (p.x == frog.getp() && p.y == frog.getY()) {
+                if (p.getX() == currentX && p.getY() == currentY) {
                     isCrash = true;
 
                 }
             }
-            if (isCrash) {
-                frog.setX(oldX);
-                frog.setY(oldY);
-            }
+//            if (isCrash) {
+//                frog.setPosition(oldX);
+//                frog.setPosition(oldY);
+//            }
 
             terminal.setCursorPosition(oldX, oldY);
             terminal.putCharacter(' ');
-            terminal.setCursorPosition(frog.getp(), frog.getY());
+            terminal.setCursorPosition(frog.getPosition().getX(), frog.getPosition().getY());
             terminal.putCharacter(frog.getModel());
             terminal.flush();
 
+//            TEXT VID VINST
+            if (frog.hasReachedGoal()) {
+                String line = "*** YOU MADE IT! ***";
+                char[] charArray = line.toCharArray();
+                for (int i = 0; i < line.length(); i++) {
+                    charArray[i] = line.charAt(i);
+                    terminal.setCursorPosition(50 + i, 50);
+                    terminal.putCharacter(charArray[i]);
+                    terminal.flush();
 
-
-
-
-
-        }
-
-
-
-        /*  output = input (fungerar)
-
-
-        boolean continueReadingInput = true;
-
-        while (continueReadingInput) {
-
-            KeyStroke keyStroke = null;
-            do {
-                Thread.sleep(5); // might throw InterruptedException
-                keyStroke = terminal.pollInput();
-            } while (keyStroke == null);
-
-            KeyType type = keyStroke.getKeyType();
-            Character c = keyStroke.getCharacter(); // used Character, not char because it might be null
-
-            if (type != null) System.out.println(type);
-            if (c != null) System.out.println(c);
-            if (c == Character.valueOf('q')) {
-                continueReadingInput = false;
-                System.out.println("Quit");
-                terminal.close();
+                }
             }
-            terminal.flush();
-
         }
-         */
+    }
 
+    public static void moveCarLeft(Car car, Position position, Terminal terminal) throws IOException {
+        Position oldPosition = new Position(position.getY(), position.getX());
+        car.setPosition(new Position(oldPosition.getY(), (oldPosition.getX() - 1)));
 
-//        for (int column = 4; column < 10; column++) {
-//            terminal.setCursorPosition(column, 4);
-//            terminal.putCharacter('X');
-//            terminal.flush();
-//        }
-//
-//        for (int row = 4; row < 10; row++) {
-//            terminal.setCursorPosition(5, row);
-//            terminal.putCharacter('X');
-//            terminal.flush();
-//        }
+//        terminal.setCursorPosition(oldPosition.getX(), oldPosition.getY());
+//        terminal.putCharacter(' ');
 
+        terminal.setCursorPosition(position.getX(), position.getY());
+        terminal.putCharacter('C');
 
-        //Fungerar:
-//        String line = "This is a String printed out in Lanterna by iterating over the characters";
-//        char[] charArray = line.toCharArray();
-//        for (int i = 0; i < line.length(); i++) {
-//            charArray[i] = line.charAt(i);
-//            terminal.setCursorPosition(i,6);
-//            terminal.putCharacter(charArray[i]);
-//            terminal.flush();
-//        }
-
-        // Task 6
-//        for (int i = 0; i<charArray.length; i++) {
-//            terminal.setCursorPosition(i,6);
-//            terminal.putCharacter(charArray[i]);
-//            terminal.flush();
-//        }
-
-
+        terminal.flush();
     }
 
 }
+
 
