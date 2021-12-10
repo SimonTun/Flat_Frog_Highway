@@ -1,15 +1,12 @@
-import com.googlecode.lanterna.terminal.Terminal;
-
-
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GameState {
     private Frog frog;
     private Car car;
 
-    public GameState () {
-       this.frog = new Frog(new Position(50, 50), 'F');
-        this.car = new Car(new Position(25,carStartPosition()),'C');
+    public GameState() {
+        this.frog = new Frog(new Position(50, 50), 'F');
+        this.car = new Car(randomStartPosition(), 'C');
     }
 
     public Frog getFrog() {
@@ -47,21 +44,23 @@ public class GameState {
 
     // Returnerar true om grodan och bilen är på samma position
 
-public boolean collision() {
+    public boolean collision() {
 
-    return frog.getPosition() == car.getPosition();
-}
+        return frog.getPosition() == car.getPosition();
+    }
 
     // Returnerar randomiserad startposition för Car
-public int carStartPosition() {
 
-//    CarDirection[] arr={CarDirection.RIGHT, CarDirection.LEFT};
-//    Random r=new Random();
-//    int randomNumber=r.nextInt(arr.length);
-//    return (arr[randomNumber]);
-    int[] numbers = {1,100};
-    return numbers[ThreadLocalRandom.current().nextInt(1)];
+    public Position randomStartPosition() {
+        int[] leftRight = {1, 100};
+        int y = leftRight[ThreadLocalRandom.current().nextInt(2)];
+        int x= ThreadLocalRandom.current().nextInt(9,40);
+        return new Position(x,y);
+    }
 
-//
-}
+    public CarDirection flagDirection(int y) {
+        if (y == 100)
+        return CarDirection.LEFT;
+        return CarDirection.RIGHT;
+    }
 }

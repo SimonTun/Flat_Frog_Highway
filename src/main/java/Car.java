@@ -2,20 +2,16 @@ public class Car {
     private Position position;
     private Position prevPosition;
     private char model;
-    private CarDirection direction;
+    private final CarDirection direction;
 
     public Car(Position position, char model) {
         this.position = position;
         this.model = model;
-        setDirection();
+        this.direction = setDirection();
     }
 
     public Position getPosition() {
         return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
     }
 
     public Position getPrevPosition() {
@@ -34,14 +30,16 @@ public class Car {
         this.model = model;
     }
 
-    public void setDirection() {
+    public CarDirection setDirection() {
         if (this.position.getY() == 100) {
-            this.direction = CarDirection.LEFT;
+            return CarDirection.LEFT;
         }
-        this.direction = CarDirection.RIGHT;
+        return CarDirection.RIGHT;
     }
 
     public CarDirection getDirection() {
         return this.direction;
     }
+
+
 }
