@@ -21,17 +21,9 @@ public class Main {
 
         GameState gs = new GameState();
 
-        // Car direction bestäms (flytta in i Car alt GameState senare)
+        // Car direction bestäms (flytta in i Car alt GameState senare??
         List<Car> cars = gs.getCars();
         setDirectionForCars(cars,terminal);
-//        int startY = gs.getCarY();
-//        int startX = gs.getCarX();
-//
-//        if (startX == 100) {
-//            gs.getCar().setDirection(CarDirection.LEFT);
-//        } else {
-//            gs.getCar().setDirection(CarDirection.RIGHT);
-//        }
 
 //      Placera ut groda och bil
         drawCharacters(cars, gs.getFrog(), terminal);
@@ -71,7 +63,7 @@ public class Main {
             do {
                 index++;
                 if (index % 10 == 0) {
-                    moveCar(gs.getCar(), gs.getCar().getPosition(), gs.getCar().getDirection(), terminal);
+                    moveCars(cars, terminal);
                 }
                 Thread.sleep(5);
                 keyStroke = terminal.pollInput();
@@ -123,22 +115,30 @@ public class Main {
         }
     }
 
-    public static void moveCar(Car car, Position position, CarDirection direction, Terminal terminal) throws IOException {
-        int oldCarX = car.getPosition().getX();
-        int oldCarY = car.getPosition().getY();
-        car.setPrevPosition(new Position(oldCarX, oldCarY));
+    public static void moveCars(List<Car> cars, Terminal terminal) throws IOException {               //FUNKAR!!!!!!!!!
+        for (Car car : cars) {
+            int newX = 0;
 
-        if (direction == CarDirection.LEFT) {
-            position.setX((position.getX() - 1));
-        } else if (direction == CarDirection.RIGHT) {
-            position.setX((position.getX() + 1));
+            int oldCarX = car.getPosition().getX();
+            int oldCarY = car.getPosition().getY();
+            car.setPrevPosition(new Position(oldCarX, oldCarY));
+
+            CarDirection cd = car.getDirection();
+            if (cd == CarDirection.LEFT) {
+                newX = (car.getPosition().getX()) - 1;
+               car.getPosition().setX(newX);
+            } else if (cd == CarDirection.RIGHT) {
+                newX = (car.getPosition().getX() + 1);
+                car.getPosition().setX(newX);
+            }
+            terminal.setCursorPosition(oldCarX, oldCarY);
+            terminal.putCharacter(' ');
+
+            car.setPosition(car.getPosition());
+            terminal.setCursorPosition(newX,car.getPosition().getY());
+            terminal.putCharacter(car.getModel());
+            terminal.flush();
         }
-        terminal.setCursorPosition(oldCarX, oldCarY);
-        terminal.putCharacter(' ');
-
-        terminal.setCursorPosition(position.getX(), position.getY());
-        terminal.putCharacter('C');
-        terminal.flush();
     }
 
     public static void hideLastPosition(Position position, Terminal terminal) throws IOException {
