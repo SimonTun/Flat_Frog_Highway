@@ -1,16 +1,15 @@
-import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
-import java.io.IOException;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GameState {
     private Frog frog;
     private Car car;
 
-    public GameState () throws IOException {
-       this.frog = new Frog(new Position(50, 50), 'F');
-        this.car = new Car(new Position(25,100),'C');
+    public GameState() {
+        this.frog = new Frog(new Position(50, 50), 'F');
+        this.car = new Car(randomStartPosition(), 'C');
     }
 
     public Frog getFrog() {
@@ -25,26 +24,8 @@ public class GameState {
         return frog.getPosition().getX();
     }
 
-    public int getFrogPrevX() {
-        return frog.getPosition().getPreviousX();
-    }
-
     public int getFrogY() {
         return frog.getPosition().getY();
-    }
-
-    public int getFrogPrevY() {
-        return frog.getPosition().getPreviousY();
-    }
-
-    public Position frogPrevPos(){
-        Position prevPosition = new Position(this.frog.getPosition().getPreviousX(), this.frog.getPosition().getPreviousY());
-        return prevPosition;
-    }
-
-    public Position carPrevPos(){
-        Position prevPosition = new Position(this.car.getPosition().getPreviousX(), this.car.getPosition().getPreviousY());
-        return prevPosition;
     }
 
     public char getFrogModel() {
@@ -55,16 +36,8 @@ public class GameState {
         return car.getPosition().getX();
     }
 
-    public int getCarPrevX() {
-        return car.getPosition().getPreviousX();
-    }
-
     public int getCarY() {
         return car.getPosition().getY();
-    }
-
-    public int getCarPrevY() {
-        return car.getPosition().getPreviousY();
     }
 
     public char getCarModel() {
@@ -72,7 +45,18 @@ public class GameState {
     }
 
 
+    // Returnerar true om grodan och bilen är på samma position
 
+    public boolean collision() {
 
+        return frog.getPosition() == car.getPosition();
+    }
 
+    public Position randomStartPosition() {
+        int[] leftRight = {0, 100};
+        int x = leftRight[ThreadLocalRandom.current().nextInt(2)];
+        int y = ThreadLocalRandom.current().nextInt(9, 40);
+        return new Position(x, y);
+    }
 }
+
