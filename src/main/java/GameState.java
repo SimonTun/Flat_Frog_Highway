@@ -9,7 +9,7 @@ public class GameState {
 
     public GameState() {
         this.frog = new Frog(new Position(50, 50), 'F');
-        this.car = new Car(new Position(randomNum(), 25), 'C');
+        this.car = new Car(randomStartPosition(), 'C');
     }
 
     public Frog getFrog() {
@@ -55,20 +55,14 @@ public class GameState {
     // Returnerar randomiserad startposition för Car
     public int carStartPosition() {
 
-//    CarDirection[] arr={CarDirection.RIGHT, CarDirection.LEFT};
-//    Random r=new Random();
-//    int randomNumber=r.nextInt(arr.length);
-//    return (arr[randomNumber]);
-        int[] numbers = {1, 100};
-        return numbers[ThreadLocalRandom.current().nextInt(2)];
-
     }
 
-    public int randomNum() {
-        int[] numbers = {1, 100};
-        return numbers[ThreadLocalRandom.current().nextInt(2)];
+    public Position randomStartPosition() {
+        int[] leftRight = {1, 100};
+        int x = leftRight[ThreadLocalRandom.current().nextInt(2)];
+        int y = ThreadLocalRandom.current().nextInt(9, 40);
+        return new Position(x, y);
     }
-
-
-
 }
+//
+
