@@ -7,15 +7,10 @@ public class Car {
     public Car(Position position, char model) {
         this.position = position;
         this.model = model;
-        setDirection();
     }
 
     public Position getPosition() {
         return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
     }
 
     public Position getPrevPosition() {
@@ -30,15 +25,8 @@ public class Car {
         return model;
     }
 
-    public void setModel(char model) {
-        this.model = model;
-    }
-
-    public void setDirection() {
-        if (this.position.getY() == 100) {
-            this.direction = CarDirection.LEFT;
-        }
-        this.direction = CarDirection.RIGHT;
+    public void setDirection(CarDirection direction) {
+        this.direction = direction;
     }
 
     public CarDirection getDirection() {

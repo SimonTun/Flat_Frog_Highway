@@ -1,13 +1,13 @@
 public class Position {
 
-    private int y;
     private int x;
+    private int y;
     private int previousX;
     private int previousY;
 
     public Position(int x, int y) {
-        this.y = x;
-        this.x = y;
+        this.x = x;
+        this.y = y;
     }
 
     public int getPreviousX() {
