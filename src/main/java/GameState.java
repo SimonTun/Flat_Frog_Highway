@@ -52,11 +52,17 @@ public class GameState {
         return frog.getPosition() == car.getPosition();
     }
 
+    // Returnerar randomiserad startposition för Car
+    public int carStartPosition() {
+
+    }
+
     public Position randomStartPosition() {
-        int[] leftRight = {0, 100};
+        int[] leftRight = {1, 100};
         int x = leftRight[ThreadLocalRandom.current().nextInt(2)];
         int y = ThreadLocalRandom.current().nextInt(9, 40);
         return new Position(x, y);
     }
 }
+//
 

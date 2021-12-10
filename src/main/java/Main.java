@@ -4,6 +4,7 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -19,6 +20,16 @@ public class Main {
 
         GameState gs = new GameState();
 
+        // Car direction bestäms (flytta in i Car alt GameState senare)
+        int startY = gs.getCarY();
+        int startX = gs.getCarX();
+
+        if (startX == 100) {
+            gs.getCar().setDirection(CarDirection.LEFT);
+        } else {
+            gs.getCar().setDirection(CarDirection.RIGHT);
+        }
+
 //      Placera ut groda och bil
         terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
         terminal.putCharacter(gs.getFrogModel());
@@ -29,8 +40,8 @@ public class Main {
         Position[] roadSideDown = new Position[terminalWidth];
         Position[] roadSideUp = new Position[terminalWidth];
         for (int i = 0; i < terminalWidth; i++) {
-            roadSideUp[i] = new Position(10, i);
-            roadSideDown[i] = new Position(40, i);
+            roadSideUp[i] = new Position(i,10);
+            roadSideDown[i] = new Position(i,40);
         }
 
         //Print vägen
@@ -63,8 +74,7 @@ public class Main {
                 index++;
                 if (index % 10 == 0) {
                     moveCar(gs.getCar().getPosition(), gs.getCar().getDirection(), terminal);
-//                    hideLastPosition();
-
+                    hideLastPosition(gs.getCar().getPosition(), terminal);
                 }
                 Thread.sleep(5);
                 keyStroke = terminal.pollInput();
@@ -121,7 +131,7 @@ public class Main {
         if (direction == CarDirection.LEFT) {
             position.setX((position.getX() - 1));
         }
-        else {
+        else if (direction == CarDirection.RIGHT){
             position.setX((position.getX() + 1));
         }
         terminal.setCursorPosition(position.getX(), position.getY());
