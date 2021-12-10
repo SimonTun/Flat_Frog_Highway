@@ -59,4 +59,7 @@ public class Frog {
     }
 
 
+    public void setPrevPosition() {
+        this.prevPosition = prevPosition;
+    }
 }

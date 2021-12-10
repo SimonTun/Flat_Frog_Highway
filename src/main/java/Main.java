@@ -40,8 +40,8 @@ public class Main {
         Position[] roadSideDown = new Position[terminalWidth];
         Position[] roadSideUp = new Position[terminalWidth];
         for (int i = 0; i < terminalWidth; i++) {
-            roadSideUp[i] = new Position(i,10);
-            roadSideDown[i] = new Position(i,40);
+            roadSideUp[i] = new Position(i, 10);
+            roadSideDown[i] = new Position(i, 40);
         }
 
         //Print vägen
@@ -61,11 +61,9 @@ public class Main {
 //        MEGALOOPENS BÖRJAN
         boolean continueReadingInput = true;
         while (continueReadingInput) {
-            gs.getFrog().getPosition().setPreviousX(gs.getFrogX());
-            gs.getFrog().getPosition().setPreviousY(gs.getFrogY());
-            gs.getCar().getPosition().setPreviousX(gs.getCarX());
-            gs.getCar().getPosition().setPreviousY(gs.getCarY());
-
+            int frogOldX = gs.getFrogX();
+            int frogOldY = gs.getFrogY();
+            gs.getFrog().setPrevPosition(new Position(frogOldX, frogOldY));
 
 //            KEYSTROKE-LOOPEN BÖRJAR HÄR
             int index = 0;
@@ -73,8 +71,7 @@ public class Main {
             do {
                 index++;
                 if (index % 10 == 0) {
-                    moveCar(gs.getCar().getPosition(), gs.getCar().getDirection(), terminal);
-                    hideLastPosition(gs.getCar().getPosition(), terminal);
+                    moveCar(gs.getCar(),gs.getCar().getPosition(), gs.getCar().getDirection(), terminal);
                 }
                 Thread.sleep(5);
                 keyStroke = terminal.pollInput();
@@ -107,7 +104,7 @@ public class Main {
 //                frog.setPosition(oldY);
 //            }
 
-            hideLastPosition(gs.getFrog().getPosition(), terminal);
+            hideLastPosition(gs.getFrog().getPrevPosition(), terminal);
             terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
             terminal.putCharacter(gs.getFrogModel());
             terminal.flush();
@@ -121,26 +118,31 @@ public class Main {
                     terminal.setCursorPosition(50 + i, 50);
                     terminal.putCharacter(charArray[i]);
                     terminal.flush();
-
                 }
             }
         }
     }
 
-    public static void moveCar(Position position, CarDirection direction, Terminal terminal) throws IOException {
+    public static void moveCar(Car car, Position position, CarDirection direction, Terminal terminal) throws IOException {
+        int oldCarX = car.getPosition().getX();
+        int oldCarY = car.getPosition().getY();
+        car.setPrevPosition(new Position(oldCarX,oldCarY));
+
         if (direction == CarDirection.LEFT) {
             position.setX((position.getX() - 1));
-        }
-        else if (direction == CarDirection.RIGHT){
+        } else if (direction == CarDirection.RIGHT) {
             position.setX((position.getX() + 1));
         }
+        terminal.setCursorPosition(oldCarX, oldCarY);
+        terminal.putCharacter(' ');
+
         terminal.setCursorPosition(position.getX(), position.getY());
         terminal.putCharacter('C');
         terminal.flush();
     }
 
     public static void hideLastPosition(Position position, Terminal terminal) throws IOException {
-        terminal.setCursorPosition(position.getPreviousX(), position.getPreviousY());
+        terminal.setCursorPosition(position.getX(), position.getY());
         terminal.putCharacter(' ');
     }
 }

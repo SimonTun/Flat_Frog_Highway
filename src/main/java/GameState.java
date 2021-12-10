@@ -16,6 +16,10 @@ public class GameState {
         return frog;
     }
 
+    public void setFrog() {
+        this.frog = frog;
+    }
+
     public Car getCar() {
         return car;
     }
@@ -43,18 +47,15 @@ public class GameState {
     public char getCarModel() {
         return car.getModel();
     }
-
-
     // Returnerar true om grodan och bilen är på samma position
 
     public boolean collision() {
-
-        return frog.getPosition() == car.getPosition();
-    }
-
-    // Returnerar randomiserad startposition för Car
-    public int carStartPosition() {
-
+        boolean hasCrashed = false;
+        if (this.frog.getPosition().getX() == this.car.getPosition().getX() &&
+            this.frog.getPosition().getY() == this.car.getPosition().getY()) {
+            hasCrashed = true;
+        }
+        return hasCrashed;
     }
 
     public Position randomStartPosition() {

@@ -13,6 +13,10 @@ public class Car {
         return position;
     }
 
+    public void setPosition(Position position) {
+        this.position = this.position;
+    }
+
     public Position getPrevPosition() {
         return prevPosition;
     }
