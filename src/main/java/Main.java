@@ -4,6 +4,7 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
@@ -21,20 +22,19 @@ public class Main {
         GameState gs = new GameState();
 
         // Car direction bestäms (flytta in i Car alt GameState senare)
-        int startY = gs.getCarY();
-        int startX = gs.getCarX();
-
-        if (startX == 100) {
-            gs.getCar().setDirection(CarDirection.LEFT);
-        } else {
-            gs.getCar().setDirection(CarDirection.RIGHT);
-        }
+        List<Car> cars = gs.getCars();
+        setDirectionForCars(cars,terminal);
+//        int startY = gs.getCarY();
+//        int startX = gs.getCarX();
+//
+//        if (startX == 100) {
+//            gs.getCar().setDirection(CarDirection.LEFT);
+//        } else {
+//            gs.getCar().setDirection(CarDirection.RIGHT);
+//        }
 
 //      Placera ut groda och bil
-        terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
-        terminal.putCharacter(gs.getFrogModel());
-        terminal.setCursorPosition(gs.getCarX(), gs.getCarY());
-        terminal.putCharacter(gs.getCarModel());
+        drawCharacters(cars, gs.getFrog(), terminal);
 
         //Create array
         Position[] roadSideDown = new Position[terminalWidth];
@@ -71,7 +71,7 @@ public class Main {
             do {
                 index++;
                 if (index % 10 == 0) {
-                    moveCar(gs.getCar(),gs.getCar().getPosition(), gs.getCar().getDirection(), terminal);
+                    moveCar(gs.getCar(), gs.getCar().getPosition(), gs.getCar().getDirection(), terminal);
                 }
                 Thread.sleep(5);
                 keyStroke = terminal.pollInput();
@@ -126,7 +126,7 @@ public class Main {
     public static void moveCar(Car car, Position position, CarDirection direction, Terminal terminal) throws IOException {
         int oldCarX = car.getPosition().getX();
         int oldCarY = car.getPosition().getY();
-        car.setPrevPosition(new Position(oldCarX,oldCarY));
+        car.setPrevPosition(new Position(oldCarX, oldCarY));
 
         if (direction == CarDirection.LEFT) {
             position.setX((position.getX() - 1));
@@ -144,6 +144,28 @@ public class Main {
     public static void hideLastPosition(Position position, Terminal terminal) throws IOException {
         terminal.setCursorPosition(position.getX(), position.getY());
         terminal.putCharacter(' ');
+    }
+
+    public static void setDirectionForCars(List<Car> cars, Terminal terminal) throws IOException {
+        for (Car car : cars) {
+            int oldX = car.getPosition().getX();
+            if (oldX == 100) {
+                car.setDirection(CarDirection.LEFT);
+            } else {
+                car.setDirection(CarDirection.RIGHT);
+            }
+        }
+    }
+
+    public static void drawCharacters(List<Car> cars, Frog frog, Terminal terminal) throws IOException {
+        for (Car car : cars) {
+            terminal.setCursorPosition(car.getPosition().getX(),car.getPosition().getY());
+            terminal.putCharacter(car.getModel());
+
+           terminal.setCursorPosition(frog.getPosition().getX(), frog.getPosition().getY());
+           terminal.putCharacter(frog.getModel());
+
+        }
     }
 }
 
