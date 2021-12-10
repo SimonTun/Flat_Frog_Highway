@@ -74,7 +74,7 @@ public class Main {
                 index++;
                 if (index % 10 == 0) {
                     moveCar(gs.getCar().getPosition(), gs.getCar().getDirection(), terminal);
-//                    hideLastPosition();
+                    hideLastPosition(gs.getCar().getPosition(), terminal);
                 }
                 Thread.sleep(5);
                 keyStroke = terminal.pollInput();
