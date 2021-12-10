@@ -1,5 +1,6 @@
 public class Frog {
     private Position position;
+    private Position prevPosition;
     private char model;
 
     public Frog(Position position, char model) {
@@ -13,6 +14,14 @@ public class Frog {
 
     public void setPosition(Position position) {
         this.position = position;
+    }
+
+    public Position getPrevPosition() {
+        return prevPosition;
+    }
+
+    public void setPrevPosition(Position position) {
+        this.prevPosition = position;
     }
 
     public char getModel() {
@@ -48,4 +57,6 @@ public class Frog {
         int currentFrogX = this.position.getX();
         position.setX(currentFrogX - 1);
     }
+
+
 }
