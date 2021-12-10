@@ -7,19 +7,6 @@ public class Frog {
         this.model = model;
     }
 
-//    public int getX() {
-//        return position.getX();
-//    }
-//    public int getY() {
-//        return position.getY();
-//            }
-//    public void setX(int x) {
-//        position.setX(x);
-//    }
-//    public void setY(int y) {
-//        position.setY(position.getY()-y);
-//    }
-
     public Position getPosition() {
         return position;
     }
@@ -61,6 +48,4 @@ public class Frog {
         int currentFrogX = this.position.getX();
         position.setX(currentFrogX - 1);
     }
-
-
 }

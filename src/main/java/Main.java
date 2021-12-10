@@ -16,11 +16,12 @@ public class Main {
         Terminal terminal = terminalFactory.createTerminal();
         terminal.setCursorVisible(false);
 
-        Frog frog = new Frog(new Position(50, 50), 'F');
-        final char block = '-';
+        GameState gs = new GameState();
 
-        terminal.setCursorPosition(frog.getPosition().getX(), frog.getPosition().getY());
-        terminal.putCharacter(frog.getModel());
+        terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
+        terminal.putCharacter(gs.getFrogModel());
+        terminal.setCursorPosition(gs.getCarX(), gs.getCarY());
+        terminal.putCharacter(gs.getCarModel());
 
         //Create array
         Position[] roadSideDown = new Position[terminalWidth];
@@ -31,25 +32,25 @@ public class Main {
         }
 
         //Print vägen
+        final char sideline = '-';
         for (Position p : roadSideDown) {
             terminal.setCursorPosition(p.getX(), p.getY());
-            terminal.putCharacter(block);
+            terminal.putCharacter(sideline);
         }
         terminal.flush();
         for (Position p : roadSideUp) {
             terminal.setCursorPosition(p.getX(), p.getY());
-            terminal.putCharacter(block);
+            terminal.putCharacter(sideline);
         }
 
-        Car car1 = new Car(new Position((terminalHeight / 2),terminalWidth),'C');
-        terminal.setCursorPosition(car1.getPosition().getX(),car1.getPosition().getY());
-        terminal.putCharacter(car1.getModel());
         terminal.flush();
 
+//        MEGALOOPENS BÖRJAN
         boolean continueReadingInput = true;
         while (continueReadingInput) {
-            int oldX = frog.getPosition().getX();
-            int oldY = frog.getPosition().getY();
+            int oldX = gs.getFrogX();
+            int oldY = gs.getCarY();
+
 
 //            KEYSTROKE-LOOPEN BÖRJAR HÄR
             int index = 0;
@@ -57,17 +58,17 @@ public class Main {
             do {
                 index++;
                 if (index % 10 == 0) {
-                    moveCarLeft(car1, car1.getPosition(), terminal);
+                    moveCarLeft(gs.getCar(), gs.getCar().getPosition(), terminal);
                 }
                 Thread.sleep(5); // might throw InterruptedException
                 keyStroke = terminal.pollInput();
             } while (keyStroke == null);
 
             switch (keyStroke.getKeyType()) {
-                case ArrowUp -> frog.moveUp();
-                case ArrowDown -> frog.moveDown();
-                case ArrowRight -> frog.moveRight();
-                case ArrowLeft -> frog.moveLeft();
+                case ArrowUp -> gs.getFrog().moveUp();
+                case ArrowDown -> gs.getFrog().moveDown();
+                case ArrowRight -> gs.getFrog().moveRight();
+                case ArrowLeft -> gs.getFrog().moveLeft();
                 default -> {
                     System.out.println("Quitting");
                     continueReadingInput = false;
@@ -75,20 +76,14 @@ public class Main {
                 }
             }
 
-//            if (c == Character.valueOf('q')) {
-//                continueReadingInput = false;
-//                System.out.println("Quit");
-//                terminal.close();
-//            }
-
-            int currentX = frog.getPosition().getX();
-            int currentY = frog.getPosition().getY();
+            int currentX = gs.getFrogX();
+            int currentY = gs.getFrogY();
 
             boolean isCrash = false;
             for (Position p : roadSideUp) {
                 if (p.getX() == currentX && p.getY() == currentY) {
                     isCrash = true;
-
+                    break;
                 }
             }
 //            if (isCrash) {
@@ -98,12 +93,12 @@ public class Main {
 
             terminal.setCursorPosition(oldX, oldY);
             terminal.putCharacter(' ');
-            terminal.setCursorPosition(frog.getPosition().getX(), frog.getPosition().getY());
-            terminal.putCharacter(frog.getModel());
+            terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
+            terminal.putCharacter(gs.getFrogModel());
             terminal.flush();
 
 //            TEXT VID VINST
-            if (frog.hasReachedGoal()) {
+            if (gs.getFrog().hasReachedGoal()) {
                 String line = "*** YOU MADE IT! ***";
                 char[] charArray = line.toCharArray();
                 for (int i = 0; i < line.length(); i++) {
@@ -118,18 +113,16 @@ public class Main {
     }
 
     public static void moveCarLeft(Car car, Position position, Terminal terminal) throws IOException {
-        Position oldPosition = new Position(position.getY(), position.getX());
-        car.setPosition(new Position(oldPosition.getY(), (oldPosition.getX() - 1)));
+        Position oldPosition = new Position(position.getX(), position.getY());
+        car.setPosition(new Position(oldPosition.getX(), (oldPosition.getY() - 1)));
 
-//        terminal.setCursorPosition(oldPosition.getX(), oldPosition.getY());
-//        terminal.putCharacter(' ');
-
+        terminal.setCursorPosition(oldPosition.getX(), oldPosition.getY());
+        terminal.putCharacter(' ');
         terminal.setCursorPosition(position.getX(), position.getY());
         terminal.putCharacter('C');
 
         terminal.flush();
     }
-
 }
 
 
