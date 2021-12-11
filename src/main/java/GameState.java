@@ -9,10 +9,13 @@ public class GameState {
     private Frog frog;
     private Car car;
     private List<Car> cars;
+    private final char clock = '\u23F2';     // Symbol vid kommande tidtagning (highscore)
+    private int terminalWidth;
+    private int terminalHeight;
 
     public GameState() {
-        this.frog = new Frog(new Position(50, 50), 'F');
-        this.car = new Car(randomStartPosition(), 'C');
+        this.frog = new Frog(new Position(50, 50), '\uFE61');
+        this.car = new Car(randomStartPosition(), '\u2180');
         this.cars = createCars();
     }
 
@@ -55,7 +58,15 @@ public class GameState {
     public char getCarModel() {
         return car.getModel();
     }
-    // Returnerar true om grodan och bilen är på samma position
+
+    public void setTerminalWidth(int terminalWidth) {
+        this.terminalWidth = terminalWidth;
+    }
+
+    public void setTerminalHeight(int terminalHeight) {
+        this.terminalHeight = terminalHeight;
+    }
+// Returnerar true om grodan och bilen är på samma position
 
     public boolean collision() {
         boolean hasCrashed = false;
@@ -66,11 +77,20 @@ public class GameState {
         return hasCrashed;
     }
 
+    // Returnerar randomiserad startposition för Car
+
     public Position randomStartPosition() {
         int[] leftRight = {1, 100};
         int x = leftRight[ThreadLocalRandom.current().nextInt(2)];
         int y = ThreadLocalRandom.current().nextInt(11, 40);
         return new Position(x, y);
+    }
+    // Returnerar randomiserad startriktning för Car
+
+    public CarDirection randomStartDirection() {
+        CarDirection[] leftRight = {CarDirection.LEFT, CarDirection.RIGHT};
+        CarDirection x = leftRight[ThreadLocalRandom.current().nextInt(2)];
+        return x;
     }
 
     public List<Car> createCars() {
@@ -84,5 +104,3 @@ public class GameState {
         return cars;
     }
 }
-//
-

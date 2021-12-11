@@ -22,4 +22,18 @@ public class Position {
     public void setY(int y) {
         this.y = y;
     }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        boolean result = false;
+
+        if(other instanceof Position)
+        {
+            Position that = (Position) other;
+            result = (getX() == that.getX() && getY() == that.getY());
+        }
+
+        return result;
+    }
 }

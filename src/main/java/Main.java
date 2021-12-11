@@ -20,6 +20,8 @@ public class Main {
         terminal.setCursorVisible(false);
 
         GameState gs = new GameState();
+        gs.setTerminalHeight(terminalHeight);
+        gs.setTerminalWidth(terminalWidth);
 
         // Car direction bestäms (flytta in i Car alt GameState senare??
         List<Car> cars = gs.getCars();
@@ -28,27 +30,27 @@ public class Main {
 //      Placera ut groda och bil
         drawCharacters(cars, gs.getFrog(), terminal);
 
-        //Create array
-        Position[] roadSideDown = new Position[terminalWidth];
+//        //Sparar denna loop för att krashrutin skall funka
+//        Position[] roadSideDown = new Position[terminalWidth];
         Position[] roadSideUp = new Position[terminalWidth];
         for (int i = 0; i < terminalWidth; i++) {
             roadSideUp[i] = new Position(i, 10);
-            roadSideDown[i] = new Position(i, 40);
+//            roadSideDown[i] = new Position(i, 40);
         }
-
-        //Print vägen
-        final char sideline = '-';
-        for (Position p : roadSideDown) {
-            terminal.setCursorPosition(p.getX(), p.getY());
-            terminal.putCharacter(sideline);
-        }
-        terminal.flush();
-        for (Position p : roadSideUp) {
-            terminal.setCursorPosition(p.getX(), p.getY());
-            terminal.putCharacter(sideline);
-        }
-
-        terminal.flush();
+//
+//        //Print vägen
+//        final char sideline = '-';
+//        for (Position p : roadSideDown) {
+//            terminal.setCursorPosition(p.getX(), p.getY());
+//            terminal.putCharacter(sideline);
+//        }
+//        terminal.flush();
+//        for (Position p : roadSideUp) {
+//            terminal.setCursorPosition(p.getX(), p.getY());
+//            terminal.putCharacter(sideline);
+//        }
+//
+//        terminal.flush();
 
 //        MEGALOOPENS BÖRJAN
         boolean continueReadingInput = true;
@@ -61,6 +63,7 @@ public class Main {
             int index = 0;
             KeyStroke keyStroke = null;
             do {
+                drawRoadLines(terminal, terminalWidth, gs.getFrogY());             // Ritar ut sidlinjer
                 index++;
                 if (index % 10 == 0) {
                     moveCars(cars, terminal);
@@ -166,6 +169,46 @@ public class Main {
            terminal.putCharacter(frog.getModel());
 
         }
+    }
+
+    public static void drawRoadLines(Terminal terminal, int terminalWidth, int frogY) throws IOException{
+
+        final char sideLine = '=';
+        final char midLine = '-';
+
+        //Create array
+        Position[] roadSideDown = new Position[terminalWidth];
+        Position[] middleLine = new Position[terminalWidth];
+        Position[] roadSideUp = new Position[terminalWidth];
+        for (int i = 0; i < terminalWidth; i++) {
+            roadSideUp[i] = new Position(i, 10);
+            middleLine[i] = new Position(i, 25);
+            roadSideDown[i] = new Position(i, 40);
+        }
+
+
+
+        //Print vägen
+        for (int i = 0; i <terminalWidth; i++) {
+            if (frogY != roadSideDown[i].getY() || frogY != middleLine[i].getY() || frogY != roadSideUp[i].getY()) {
+                terminal.setCursorPosition(roadSideUp[i].getX(), roadSideUp[i].getY());
+                terminal.putCharacter(sideLine);
+                terminal.setCursorPosition(middleLine[i].getX(), middleLine[i].getY());
+                terminal.putCharacter(midLine);
+                terminal.setCursorPosition(roadSideDown[i].getX(), roadSideDown[i].getY());
+                terminal.putCharacter(sideLine);
+            }
+
+        }
+            terminal.flush();
+
+
+
+
+
+
+
+
     }
 }
 

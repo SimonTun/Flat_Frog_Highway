@@ -36,6 +36,18 @@ public class Frog {
         if (position.getY() == 10)
             return true;
         return false;
+
+    }
+    public boolean hasCrashed() {
+        if (position.getY() == 10)
+            return true;
+        return false;
+
+    }
+
+    public boolean isAlive() {
+
+        return true;
     }
 
     public void moveUp() {
