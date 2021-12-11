@@ -92,17 +92,42 @@ public class GameState {
         CarDirection currentCarDir = listCars.get(indexNumber).getDirection();
         char currentModel = listCars.get(indexNumber).getModel();
 
-        listCars.add(new Car(new Position(0,rowNumber),'X'));
+        listCars.add(new Car(new Position(0,rowNumber),currentModel));
+
+        int columNumber = listCars.get(indexNumber).getPosition().getX();
 
         if (currentCarDir == CarDirection.LEFT) {
-            listCars.get(listCars.size() - 1).getPosition().setX(100);
-            listCars.get(listCars.size() - 1).setDirection(CarDirection.LEFT);
-
+            if (currentModel == 'C') {
+                listCars.get(listCars.size() - 1).getPosition().setX(columNumber + 10);
+                listCars.get(listCars.size() - 1).setDirection(CarDirection.LEFT);
+            }
+            else if (currentModel == 'A') {
+                listCars.get(listCars.size() - 1).getPosition().setX(columNumber + 20);
+                listCars.get(listCars.size() - 1).setDirection(CarDirection.LEFT);
+            }
+            else {
+                listCars.get(listCars.size() - 1).getPosition().setX(columNumber + 30);
+                listCars.get(listCars.size() - 1).setDirection(CarDirection.LEFT);
+            }
         }
         else if (currentCarDir == CarDirection.RIGHT) {
-            listCars.get(listCars.size() - 1).getPosition().setX(1);
-            listCars.get(listCars.size() - 1).setDirection(CarDirection.RIGHT);
+            if (currentModel == 'C') {
+                listCars.get(listCars.size() - 1).getPosition().setX(columNumber - 10);
+                listCars.get(listCars.size() - 1).setDirection(CarDirection.RIGHT);
+            }
+            else if (currentModel == 'A') {
+                listCars.get(listCars.size() - 1).getPosition().setX(columNumber - 20);
+                listCars.get(listCars.size() - 1).setDirection(CarDirection.RIGHT);
+            }
+            else {
+                listCars.get(listCars.size() - 1).getPosition().setX(columNumber - 30);
+                listCars.get(listCars.size() - 1).setDirection(CarDirection.RIGHT);
+            }
         }
+
+        terminal.setCursorPosition(listCars.get(listCars.size()-1).getPosition().getX(),listCars.get(listCars.size()-1).getPosition().getY());
+        terminal.putCharacter(currentModel);
+        terminal.flush();
     }
 
 }

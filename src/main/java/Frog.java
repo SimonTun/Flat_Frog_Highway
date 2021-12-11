@@ -33,7 +33,7 @@ public class Frog {
     }
 
     public boolean hasReachedGoal() {
-        if (position.getY() == 10)
+        if (position.getY() < 10)
             return true;
         return false;
     }
