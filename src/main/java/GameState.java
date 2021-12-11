@@ -1,6 +1,7 @@
 import com.googlecode.lanterna.terminal.Terminal;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -75,14 +76,35 @@ public class GameState {
 
     public List<Car> createCars() {
         List<Car> cars = new ArrayList<>();
-        cars.add(new Car(randomStartPosition(),'D'));
-        cars.add(new Car(randomStartPosition(),'E'));
-        cars.add(new Car(randomStartPosition(),'F'));
-        cars.add(new Car(randomStartPosition(),'G'));
-        cars.add(new Car(randomStartPosition(),'H'));
-        cars.add(new Car(randomStartPosition(),'I'));
+        cars.add(new Car(randomStartPosition(),'C'));
+        cars.add(new Car(randomStartPosition(),'A'));
+        cars.add(new Car(randomStartPosition(),'R'));
+        cars.add(new Car(randomStartPosition(),'C'));
+        cars.add(new Car(randomStartPosition(),'A'));
+        cars.add(new Car(randomStartPosition(),'R'));
         return cars;
     }
+
+
+    public void spawnAnotherCar(int indexNumber, Terminal terminal) throws IOException {      //indexNumber syftar på indexen för bilen vars rad vi vill skapa den nya bilen på. indexNumber = 0 "klonar" bil 'D', 1 klonar bil'E' etc
+        List<Car> listCars = getCars();
+        int rowNumber = listCars.get(indexNumber).getPosition().getY();
+        CarDirection currentCarDir = listCars.get(indexNumber).getDirection();
+        char currentModel = listCars.get(indexNumber).getModel();
+
+        listCars.add(new Car(new Position(0,rowNumber),'X'));
+
+        if (currentCarDir == CarDirection.LEFT) {
+            listCars.get(listCars.size() - 1).getPosition().setX(100);
+            listCars.get(listCars.size() - 1).setDirection(CarDirection.LEFT);
+
+        }
+        else if (currentCarDir == CarDirection.RIGHT) {
+            listCars.get(listCars.size() - 1).getPosition().setX(1);
+            listCars.get(listCars.size() - 1).setDirection(CarDirection.RIGHT);
+        }
+    }
+
 }
 //
 
