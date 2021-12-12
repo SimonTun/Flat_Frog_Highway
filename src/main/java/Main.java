@@ -25,7 +25,7 @@ public class Main {
 
         // Car direction bestäms (flytta in i Car alt GameState senare??
         List<Car> cars = gs.getCars();
-        setDirectionForCars(cars, terminal);
+        setDirectionForCars(cars);
 
 //      Placera ut groda och bil
         drawCharacters(cars, gs.getFrog(), terminal);
@@ -51,7 +51,7 @@ public class Main {
         }
         terminal.flush();
 
-//        MEGALOOPENS BÖRJAN
+//      MEGALOOPENS BÖRJAN
         boolean continueReadingInput = true;
         int counter = 0;
         int index = 0;
@@ -61,12 +61,11 @@ public class Main {
             int frogOldY = gs.getFrogY();
             gs.getFrog().setPrevPosition(new Position(frogOldX, frogOldY));
 
-//            KEYSTROKE-LOOPEN BÖRJAR HÄR
             index++;
-            if (index % 70 == 0) {
+            if (index % 30 == 0) {                     //Timer för hur ofta bilarna ska röra på sig (hastighet)
                 moveCars(cars, terminal);
             }
-            if (counter % 500 == 0) {
+            if (counter % 300 == 0) {                 //Timer för hur ofta en ny bil ska skapas/spawna.  30/300 känns bra!
                 for (int i = 0; i < 6; i++) {
                     gs.spawnAnotherCar(i, terminal);
                 }
@@ -76,6 +75,7 @@ public class Main {
             KeyStroke keyStroke = terminal.pollInput();
             counter++;
 
+//          KEYSTROKE-LOOPEN BÖRJAR HÄR
             if (keyStroke != null) {
                 switch (keyStroke.getKeyType()) {
                     case ArrowUp -> gs.getFrog().moveUp();
@@ -107,7 +107,6 @@ public class Main {
                 break;
             }
         }
-
     }
 
 //        playAgain = playAgain(terminal);
@@ -161,7 +160,7 @@ public class Main {
         terminal.putCharacter(' ');
     }
 
-    public static void setDirectionForCars(List<Car> cars, Terminal terminal) throws IOException {
+    public static void setDirectionForCars(List<Car> cars) {
         for (Car car : cars) {
             int oldX = car.getPosition().getX();
             if (oldX == 100) {
