@@ -11,103 +11,106 @@ public class Main {
     public static void main(String[] args) throws Exception {
 //        boolean playAgain = true;
 
-            int terminalWidth = 100;
-            int terminalHeight = 50;
+        int terminalWidth = 100;
+        int terminalHeight = 50;
 
 //      Skapa ny terminal
-            TerminalSize ts = new TerminalSize(terminalWidth, terminalHeight);
-            DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
-            terminalFactory.setInitialTerminalSize(ts);
-            Terminal terminal = terminalFactory.createTerminal();
-            terminal.setCursorVisible(false);
+        TerminalSize ts = new TerminalSize(terminalWidth, terminalHeight);
+        DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
+        terminalFactory.setInitialTerminalSize(ts);
+        Terminal terminal = terminalFactory.createTerminal();
+        terminal.setCursorVisible(false);
 
-            GameState gs = new GameState();
+        GameState gs = new GameState();
 
-            // Car direction bestäms (flytta in i Car alt GameState senare??
-            List<Car> cars = gs.getCars();
-            setDirectionForCars(cars, terminal);
+        // Car direction bestäms (flytta in i Car alt GameState senare??
+        List<Car> cars = gs.getCars();
+        setDirectionForCars(cars, terminal);
 
 //      Placera ut groda och bil
-            drawCharacters(cars, gs.getFrog(), terminal);
+        drawCharacters(cars, gs.getFrog(), terminal);
 
-            //Create array
-            Position[] roadSideDown = new Position[terminalWidth];
-            Position[] roadSideUp = new Position[terminalWidth];
-            for (int i = 0; i < terminalWidth; i++) {
-                roadSideUp[i] = new Position(i, 10);
-                roadSideDown[i] = new Position(i, 40);
-            }
+        //Create array
+        Position[] roadSideDown = new Position[terminalWidth];
+        Position[] roadSideUp = new Position[terminalWidth];
+        for (int i = 0; i < terminalWidth; i++) {
+            roadSideUp[i] = new Position(i, 10);
+            roadSideDown[i] = new Position(i, 40);
+        }
 
-            //Print vägen
-            final char sideline = '-';
-            for (Position p : roadSideDown) {
-                terminal.setCursorPosition(p.getX(), p.getY());
-                terminal.putCharacter(sideline);
-            }
-            terminal.flush();
-            for (Position p : roadSideUp) {
-                terminal.setCursorPosition(p.getX(), p.getY());
-                terminal.putCharacter(sideline);
-            }
+        //Print vägen
+        final char sideline = '-';
+        for (Position p : roadSideDown) {
+            terminal.setCursorPosition(p.getX(), p.getY());
+            terminal.putCharacter(sideline);
+        }
+        terminal.flush();
+        for (Position p : roadSideUp) {
+            terminal.setCursorPosition(p.getX(), p.getY());
+            terminal.putCharacter(sideline);
+        }
 
-            terminal.flush();
+        terminal.flush();
 
 //        MEGALOOPENS BÖRJAN
-            boolean continueReadingInput = true;
-            while (continueReadingInput) {
-                int frogOldX = gs.getFrogX();
-                int frogOldY = gs.getFrogY();
-                gs.getFrog().setPrevPosition(new Position(frogOldX, frogOldY));
+        boolean continueReadingInput = true;
+        int counter = 0;
+        while (continueReadingInput) {
+            int frogOldX = gs.getFrogX();
+            int frogOldY = gs.getFrogY();
+            gs.getFrog().setPrevPosition(new Position(frogOldX, frogOldY));
 
 //            KEYSTROKE-LOOPEN BÖRJAR HÄR
-                int index = 0;
-                KeyStroke keyStroke = null;
-                do {
-                    index++;
-                    if (index % 70 == 0) {
-                        moveCars(cars, terminal);
-                        for (int i = 0; i < 4; i++) {
-                            gs.spawnAnotherCar(i, terminal);
-                            gs.spawnAnotherCar((i + 1), terminal);
-                            gs.spawnAnotherCar((i + 2), terminal);
-                            terminal.flush();
-                        }
-                        terminal.flush();
-                    }
-                    Thread.sleep(5);
-                    keyStroke = terminal.pollInput();
-                } while (keyStroke == null);
-
-                switch (keyStroke.getKeyType()) {
-                    case ArrowUp -> gs.getFrog().moveUp();
-                    case ArrowDown -> gs.getFrog().moveDown();
-                    case ArrowRight -> gs.getFrog().moveRight();
-                    case ArrowLeft -> gs.getFrog().moveLeft();
-                    default -> {
-                        System.out.println("Quitting");
-                        continueReadingInput = false;
-                        terminal.close();
+            int index = 0;
+            KeyStroke keyStroke = null;
+            do {
+                index++;
+                if (index % 70 == 0) {
+                    moveCars(cars, terminal);
+                }
+                if (counter % 500 == 0) {
+                    for (int i = 0; i < 6; i++) {
+                        gs.spawnAnotherCar(i, terminal);
                     }
                 }
-                hideLastPosition(gs.getFrog().getPrevPosition(), terminal);
-                terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
-                terminal.putCharacter(gs.getFrogModel());
                 terminal.flush();
+                Thread.sleep(5);
+                keyStroke = terminal.pollInput();
+                counter++;
+            } while (keyStroke == null);        // Anledning till varför bilarna inte rör sig när spelaren rör sig?
 
-//            TEXT VID VINST
-                if (gs.getFrog().hasReachedGoal()) {
-                    String line = "*** YOU MADE IT! ***";
-                    char[] charArray = line.toCharArray();
-                    for (int i = 0; i < line.length(); i++) {
-                        charArray[i] = line.charAt(i);
-                        terminal.setCursorPosition(40 + i, 25);
-                        terminal.putCharacter(charArray[i]);
-                        terminal.flush();
-                    }
-                    break;
+            switch (keyStroke.getKeyType()) {
+                case ArrowUp -> gs.getFrog().moveUp();
+                case ArrowDown -> gs.getFrog().moveDown();
+                case ArrowRight -> gs.getFrog().moveRight();
+                case ArrowLeft -> gs.getFrog().moveLeft();
+                default -> {
+                    System.out.println("Quitting");
+                    continueReadingInput = false;
+                    terminal.close();
                 }
             }
+            hideLastPosition(gs.getFrog().getPrevPosition(), terminal);
+            terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
+            terminal.putCharacter(gs.getFrogModel());
+            terminal.flush();
+
+//            TEXT VID VINST
+            if (gs.getFrog().hasReachedGoal()) {
+                String line = "*** YOU MADE IT! ***";
+                char[] charArray = line.toCharArray();
+                for (int i = 0; i < line.length(); i++) {
+                    charArray[i] = line.charAt(i);
+                    terminal.setCursorPosition(40 + i, 25);
+                    terminal.putCharacter(charArray[i]);
+                    terminal.flush();
+                }
+                break;
+            }
+        }
+
     }
+
 //        playAgain = playAgain(terminal);
 //        } while (playAgain);
 
