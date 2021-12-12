@@ -49,51 +49,50 @@ public class Main {
             terminal.setCursorPosition(p.getX(), p.getY());
             terminal.putCharacter(sideline);
         }
-
         terminal.flush();
 
 //        MEGALOOPENS BÖRJAN
         boolean continueReadingInput = true;
         int counter = 0;
+        int index = 0;
+
         while (continueReadingInput) {
             int frogOldX = gs.getFrogX();
             int frogOldY = gs.getFrogY();
             gs.getFrog().setPrevPosition(new Position(frogOldX, frogOldY));
 
 //            KEYSTROKE-LOOPEN BÖRJAR HÄR
-            int index = 0;
-            KeyStroke keyStroke = null;
-            do {
-                index++;
-                if (index % 70 == 0) {
-                    moveCars(cars, terminal);
-                }
-                if (counter % 500 == 0) {
-                    for (int i = 0; i < 6; i++) {
-                        gs.spawnAnotherCar(i, terminal);
-                    }
-                }
-                terminal.flush();
-                Thread.sleep(5);
-                keyStroke = terminal.pollInput();
-                counter++;
-            } while (keyStroke == null);        // Anledning till varför bilarna inte rör sig när spelaren rör sig?
-
-            switch (keyStroke.getKeyType()) {
-                case ArrowUp -> gs.getFrog().moveUp();
-                case ArrowDown -> gs.getFrog().moveDown();
-                case ArrowRight -> gs.getFrog().moveRight();
-                case ArrowLeft -> gs.getFrog().moveLeft();
-                default -> {
-                    System.out.println("Quitting");
-                    continueReadingInput = false;
-                    terminal.close();
+            index++;
+            if (index % 70 == 0) {
+                moveCars(cars, terminal);
+            }
+            if (counter % 500 == 0) {
+                for (int i = 0; i < 6; i++) {
+                    gs.spawnAnotherCar(i, terminal);
                 }
             }
-            hideLastPosition(gs.getFrog().getPrevPosition(), terminal);
-            terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
-            terminal.putCharacter(gs.getFrogModel());
             terminal.flush();
+            Thread.sleep(5);
+            KeyStroke keyStroke = terminal.pollInput();
+            counter++;
+
+            if (keyStroke != null) {
+                switch (keyStroke.getKeyType()) {
+                    case ArrowUp -> gs.getFrog().moveUp();
+                    case ArrowDown -> gs.getFrog().moveDown();
+                    case ArrowRight -> gs.getFrog().moveRight();
+                    case ArrowLeft -> gs.getFrog().moveLeft();
+                    default -> {
+                        System.out.println("Quitting");
+                        continueReadingInput = false;
+                        terminal.close();
+                    }
+                }
+                hideLastPosition(gs.getFrog().getPrevPosition(), terminal);
+                terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
+                terminal.putCharacter(gs.getFrogModel());
+                terminal.flush();
+            }
 
 //            TEXT VID VINST
             if (gs.getFrog().hasReachedGoal()) {
@@ -113,10 +112,9 @@ public class Main {
 
 //        playAgain = playAgain(terminal);
 //        } while (playAgain);
-
 //    }
 
-    public static void moveCars(List<Car> cars, Terminal terminal) throws IOException {               //FUNKAR!!!!!!!!!
+    public static void moveCars(List<Car> cars, Terminal terminal) throws IOException {
         for (Car car : cars) {
             int newX = 0;
 
