@@ -98,29 +98,29 @@ public class GameState {
 
         if (currentCarDir == CarDirection.LEFT) {
             if (currentModel == 'C') {
-                listCars.get(listCars.size() - 1).getPosition().setX(columNumber + 10);
+                listCars.get(listCars.size() - 1).getPosition().setX(100);
                 listCars.get(listCars.size() - 1).setDirection(CarDirection.LEFT);
             }
             else if (currentModel == 'A') {
-                listCars.get(listCars.size() - 1).getPosition().setX(columNumber + 20);
+                listCars.get(listCars.size() - 1).getPosition().setX(100);
                 listCars.get(listCars.size() - 1).setDirection(CarDirection.LEFT);
             }
             else {
-                listCars.get(listCars.size() - 1).getPosition().setX(columNumber + 30);
+                listCars.get(listCars.size() - 1).getPosition().setX(100);
                 listCars.get(listCars.size() - 1).setDirection(CarDirection.LEFT);
             }
         }
         else if (currentCarDir == CarDirection.RIGHT) {
             if (currentModel == 'C') {
-                listCars.get(listCars.size() - 1).getPosition().setX(columNumber - 10);
+                listCars.get(listCars.size() - 1).getPosition().setX(1);
                 listCars.get(listCars.size() - 1).setDirection(CarDirection.RIGHT);
             }
             else if (currentModel == 'A') {
-                listCars.get(listCars.size() - 1).getPosition().setX(columNumber - 20);
+                listCars.get(listCars.size() - 1).getPosition().setX(1);
                 listCars.get(listCars.size() - 1).setDirection(CarDirection.RIGHT);
             }
             else {
-                listCars.get(listCars.size() - 1).getPosition().setX(columNumber - 30);
+                listCars.get(listCars.size() - 1).getPosition().setX(1);
                 listCars.get(listCars.size() - 1).setDirection(CarDirection.RIGHT);
             }
         }
