@@ -1,8 +1,11 @@
 import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -10,8 +13,10 @@ import java.util.Objects;
 public class Main {
     public static void main(String[] args) throws Exception {
         boolean playAgain = true;
+
         int terminalWidth = 100;
         int terminalHeight = 50;
+        int highscore = 0;
 
 //      Skapa ny terminal
         TerminalSize ts = new TerminalSize(terminalWidth, terminalHeight);
@@ -34,16 +39,19 @@ public class Main {
             terminal.flush();
 
 //      MEGALOOPENS BÖRJAN
-            boolean continueReadingInput = true;
-            int counter = 0;
-            int index = 0;
+        boolean continueReadingInput = true;
+        int counter = 0;
+        int index = 0;
+        int currentHighscore = 0;
 
             while (continueReadingInput) {
+                printStaticHighscore(terminal, highscore);
                 int frogOldX = gs.getFrogX();
                 int frogOldY = gs.getFrogY();
                 gs.getFrog().setPrevPosition(new Position(frogOldX, frogOldY));
 
                 index++;
+                currentHighscore++;
                 if (index % 20 == 0) {                     //Timer för hur ofta bilarna ska röra på sig (hastighet)
                     moveCarsTest(cars, terminal, 'C');
                 }
@@ -80,8 +88,10 @@ public class Main {
                 }
 
                 hideLastPosition(gs.getFrog().getPrevPosition(), terminal);
+                terminal.setForegroundColor(TextColor.ANSI.GREEN);
                 terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
                 terminal.putCharacter(gs.getFrogModel());
+                terminal.setForegroundColor(TextColor.ANSI.WHITE);
                 drawRoadLines(terminal, terminalWidth, gs.getFrogY());
                 gs.hasCrashed(cars);
                 terminal.flush();
@@ -89,6 +99,21 @@ public class Main {
 //            TEXT VID VINST
                 if (gs.getFrog().hasReachedGoal()) {
                     printWinMessage(terminal);
+
+                    if (currentHighscore < highscore) {
+                        printHighscore(terminal, currentHighscore);
+                        highscore = currentHighscore;
+                        currentHighscore = 0;
+
+                    } else if (highscore == 0){
+                        printYourScore(terminal, currentHighscore);
+                        highscore = currentHighscore;
+
+                    } else if (currentHighscore > highscore){
+                        printYourScore(terminal, currentHighscore);
+                    }
+
+
                     playAgain = playAgain(terminal);
                     break;
                 }
@@ -109,8 +134,48 @@ public class Main {
         for (int i = 0; i < line.length(); i++) {
             charArray[i] = line.charAt(i);
             terminal.setCursorPosition(39 + i, 25);
+            terminal.setForegroundColor(TextColor.ANSI.CYAN);
             terminal.putCharacter(charArray[i]);
             terminal.flush();
+        }
+    }
+
+    public static void printHighscore(Terminal terminal, long highscore) throws IOException {
+        String line = "*** New time record: "+highscore + " ***";
+        char[] charArray = line.toCharArray();
+        for (int i = 0; i < line.length(); i++) {
+            charArray[i] = line.charAt(i);
+            terminal.setCursorPosition(39 + i, 20);
+            terminal.setForegroundColor(TextColor.ANSI.CYAN);
+            terminal.putCharacter(charArray[i]);
+            terminal.flush();
+        }
+    }
+
+    public static void printYourScore(Terminal terminal, long highscore) throws IOException {
+        String line = "*** Your time was: "+highscore + " ***";
+        char[] charArray = line.toCharArray();
+        for (int i = 0; i < line.length(); i++) {
+            charArray[i] = line.charAt(i);
+            terminal.setCursorPosition(39 + i, 20);
+            terminal.setForegroundColor(TextColor.ANSI.CYAN);
+            terminal.putCharacter(charArray[i]);
+            terminal.flush();
+        }
+    }
+
+    public static void printStaticHighscore(Terminal terminal, int highscore) throws IOException {
+        if (highscore != 0) {
+            String line = "Fastest run: " + highscore;
+            char[] charArray = line.toCharArray();
+            for (int i = 0; i < line.length(); i++) {
+                charArray[i] = line.charAt(i);
+                terminal.setCursorPosition(80 + i, 1);
+                terminal.setForegroundColor(TextColor.ANSI.CYAN);
+                terminal.putCharacter(charArray[i]);
+                terminal.setForegroundColor(TextColor.ANSI.WHITE);
+                terminal.flush();
+            }
         }
     }
 
@@ -121,6 +186,7 @@ public class Main {
             for (int i = 0; i < line.length(); i++) {
                 charArray[i] = line.charAt(i);
                 terminal.setCursorPosition(39 + i, 25);
+                terminal.setForegroundColor(TextColor.ANSI.RED);
                 terminal.putCharacter(charArray[i]);
                 terminal.flush();
             }

@@ -24,13 +24,15 @@ public class Position {
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(Object car)
+
+
     {
         boolean result = false;
 
-        if(other instanceof Position)
+        if(car instanceof Position)
         {
-            Position that = (Position) other;
+            Position that = (Position) car;
             result = (getX() == that.getX() && getY() == that.getY());
         }
 
