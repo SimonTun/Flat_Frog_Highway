@@ -1,11 +1,15 @@
+import java.util.List;
+
 public class Frog {
     private Position position;
     private Position prevPosition;
     private char model;
+    private boolean isAlive;
 
     public Frog(Position position, char model) {
         this.position = position;
         this.model = model;
+        this.isAlive = true;
     }
 
     public Position getPosition() {
@@ -32,10 +36,26 @@ public class Frog {
         this.model = model;
     }
 
+    public boolean isAlive() {
+        return isAlive;
+    }
+
     public boolean hasReachedGoal() {
         if (position.getY() < 10)
             return true;
         return false;
+    }
+
+    public void hasCrashed(List<Car> cars) {
+
+        Position frogPos = getPosition();
+
+        for (Car car : cars) {
+            if (frogPos.equals(car.getPosition())) {
+                isAlive = false;
+                break;
+            }
+        }
     }
 
     public void moveUp() {

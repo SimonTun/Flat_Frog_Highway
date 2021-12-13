@@ -22,22 +22,26 @@ public class Main {
         terminal.setCursorVisible(false);
 
         GameState gs = new GameState();
+        gs.setTerminalHeight(terminalHeight);
+        gs.setTerminalWidth(terminalWidth);
 
         // Car direction bestäms (flytta in i Car alt GameState senare??
         List<Car> cars = gs.getCars();
         setDirectionForCars(cars);
 
-//      Placera ut groda och bil
+//      Placera ut groda, bilar och sidlinjer
         drawCharacters(cars, gs.getFrog(), terminal);
+        drawRoadLines(terminal, terminalWidth, gs.getFrogY());
 
-//      Skapa väg
-        Position[] roadSideDown = createRoadLine(terminalWidth, 40);
-        Position[] roadSideUp = createRoadLine(terminalWidth,10);
 
-        //Print vägen
-        printRoadSide(roadSideDown, terminal);
-        printRoadSide(roadSideUp, terminal);
-        terminal.flush();
+//        //Sparar denna loop för att krashrutin skall funka
+//        Position[] roadSideDown = new Position[terminalWidth];
+        Position[] roadSideUp = new Position[terminalWidth];
+        for (int i = 0; i < terminalWidth; i++) {
+            roadSideUp[i] = new Position(i, 10);
+//            roadSideDown[i] = new Position(i, 40);
+        }
+//        terminal.flush();
 
 //      MEGALOOPENS BÖRJAN
         boolean continueReadingInput = true;
@@ -76,13 +80,14 @@ public class Main {
                         terminal.close();
                     }
                 }
-                hideLastPosition(gs.getFrog().getPrevPosition(), terminal);
-                terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
-                terminal.putCharacter(gs.getFrogModel());
-//                printRoadSide(roadSideDown, terminal);
-//                printRoadSide(roadSideUp, terminal);
-                terminal.flush();
             }
+            hideLastPosition(gs.getFrog().getPrevPosition(), terminal);
+            terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
+            terminal.putCharacter(gs.getFrogModel());
+            drawRoadLines(terminal, terminalWidth, gs.getFrogY());
+            gs.hasCrashed(cars);
+            flatMessage(terminal, gs);
+            terminal.flush();
 
 //            TEXT VID VINST
             if (gs.getFrog().hasReachedGoal()) {
@@ -95,6 +100,30 @@ public class Main {
                     terminal.flush();
                 }
                 break;
+            }
+//            TEXT OM GRODAN DÖTT (stackars groda....)
+            if (!gs.isAlive()) {
+                String line = "*** YOU GOT FLAT ***";
+                char[] charArray = line.toCharArray();
+                for (int i = 0; i < line.length(); i++) {
+                    charArray[i] = line.charAt(i);
+                    terminal.setCursorPosition(50 + i, 50);
+                    terminal.putCharacter(charArray[i]);
+                    terminal.flush();
+                }
+            }
+        }
+    }
+
+    public static void flatMessage(Terminal terminal, GameState gs) throws IOException {
+        if (!gs.isAlive()) {
+            String line = "*** YOU GOT FLAT ***";
+            char[] charArray = line.toCharArray();
+            for (int i = 0; i < line.length(); i++) {
+                charArray[i] = line.charAt(i);
+                terminal.setCursorPosition(50 + i, 50);
+                terminal.putCharacter(charArray[i]);
+                terminal.flush();
             }
         }
     }
@@ -172,22 +201,37 @@ public class Main {
         }
     }
 
-    public static Position[] createRoadLine(int terminalWidth, int yValue) {
-        Position[] roadSide = new Position[terminalWidth];
+    public static void drawRoadLines(Terminal terminal, int terminalWidth, int frogY) throws IOException{
+
+        final char sideLine = '=';
+        final char midLine = '-';
+
+        //Create array
+        Position[] roadSideDown = new Position[terminalWidth];
+        Position[] middleLine = new Position[terminalWidth];
+        Position[] roadSideUp = new Position[terminalWidth];
         for (int i = 0; i < terminalWidth; i++) {
-            roadSide[i] = new Position(i, yValue);
+            roadSideUp[i] = new Position(i, 10);
+            middleLine[i] = new Position(i, 25);
+            roadSideDown[i] = new Position(i, 40);
         }
-        return roadSide;
-    }
 
-    public static void printRoadSide(Position[] array, Terminal terminal) throws IOException {
-        final char sideline = '-';
-        for (Position p : array) {
-            terminal.setCursorPosition(p.getX(), p.getY());
-            terminal.putCharacter(sideline);
-        }
-    }
+        //Print vägen
+        for (int i = 0; i <terminalWidth; i++) {
+            if (frogY == roadSideUp[i].getY() || frogY == middleLine[i].getY() || frogY == roadSideDown[i].getY()) {
+                continue;
+            }
+                terminal.setCursorPosition(roadSideUp[i].getX(), roadSideUp[i].getY());
+                terminal.putCharacter(sideLine);
+                terminal.setCursorPosition(middleLine[i].getX(), middleLine[i].getY());
+                terminal.putCharacter(midLine);
+                terminal.setCursorPosition(roadSideDown[i].getX(), roadSideDown[i].getY());
+                terminal.putCharacter(sideLine);
+            }
 
+
+            terminal.flush();
+    }
 //    public static boolean playAgain(KeyStroke keyStroke, Terminal terminal) throws IOException {
 //        boolean playAgain = false;
 //
@@ -211,5 +255,6 @@ public class Main {
 //        return playAgain;
 //    }
 }
+
 
 
