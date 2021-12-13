@@ -1,15 +1,16 @@
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         boolean playAgain = true;
-
         int terminalWidth = 100;
         int terminalHeight = 50;
 
@@ -20,75 +21,81 @@ public class Main {
         Terminal terminal = terminalFactory.createTerminal();
         terminal.setCursorVisible(false);
 
-        GameState gs = new GameState();
+        do {
+            terminal.clearScreen();
+            GameState gs = new GameState();
 
-        // Car direction bestäms
-        List<Car> cars = gs.getCars();
-        setDirectionForCars(cars);
+            // Car direction bestäms
+            List<Car> cars = gs.getCars();
+            setDirectionForCars(cars);
 
 //      Placera ut groda, bilar och sidlinjer
-        drawCharacters(cars, gs.getFrog(), terminal);
-        drawRoadLines(terminal, terminalWidth, gs.getFrogY());
-        terminal.flush();
+            drawCharacters(cars, gs.getFrog(), terminal);
+            drawRoadLines(terminal, terminalWidth, gs.getFrogY());
+            terminal.flush();
 
 //      MEGALOOPENS BÖRJAN
-        boolean continueReadingInput = true;
-        int counter = 0;
-        int index = 0;
+            boolean continueReadingInput = true;
+            int counter = 0;
+            int index = 0;
 
-        while (continueReadingInput) {
-            int frogOldX = gs.getFrogX();
-            int frogOldY = gs.getFrogY();
-            gs.getFrog().setPrevPosition(new Position(frogOldX, frogOldY));
+            while (continueReadingInput) {
+                int frogOldX = gs.getFrogX();
+                int frogOldY = gs.getFrogY();
+                gs.getFrog().setPrevPosition(new Position(frogOldX, frogOldY));
 
-            index++;
-            if (index % 30 == 0) {                     //Timer för hur ofta bilarna ska röra på sig (hastighet)
-                moveCars(cars, terminal);
-            }
-            if (counter % 300 == 0) {                 //Timer för hur ofta en ny bil ska skapas/spawna.  30/300 känns bra!
-                for (int i = 0; i < 6; i++) {
-                    gs.spawnAnotherCar(i, terminal);
+                index++;
+                if (index % 30 == 0) {                     //Timer för hur ofta bilarna ska röra på sig (hastighet)
+                    moveCars(cars, terminal);
                 }
-            }
-            terminal.flush();
-            Thread.sleep(5);
-            KeyStroke keyStroke = terminal.pollInput();
-            counter++;
-
-//          KEYSTROKE-LOOPEN BÖRJAR HÄR
-            if (keyStroke != null) {
-                switch (keyStroke.getKeyType()) {
-                    case ArrowUp -> gs.getFrog().moveUp();
-                    case ArrowDown -> gs.getFrog().moveDown();
-                    case ArrowRight -> gs.getFrog().moveRight();
-                    case ArrowLeft -> gs.getFrog().moveLeft();
-                    default -> {
-                        System.out.println("Quitting");
-                        continueReadingInput = false;
-                        terminal.close();
+                if (counter % 300 == 0) {                 //Timer för hur ofta en ny bil ska skapas/spawna.  30/300 känns bra!
+                    for (int i = 0; i < 6; i++) {
+                        gs.spawnAnotherCar(i, terminal);
                     }
                 }
-            }
+                terminal.flush();
+                Thread.sleep(5);
+                KeyStroke keyStroke = terminal.pollInput();
+                counter++;
 
-            hideLastPosition(gs.getFrog().getPrevPosition(), terminal);
-            terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
-            terminal.putCharacter(gs.getFrogModel());
-            drawRoadLines(terminal, terminalWidth, gs.getFrogY());
-            gs.hasCrashed(cars);
-            terminal.flush();
+//          KEYSTROKE-LOOPEN BÖRJAR HÄR
+                if (keyStroke != null) {
+                    switch (keyStroke.getKeyType()) {
+                        case ArrowUp -> gs.getFrog().moveUp();
+                        case ArrowDown -> gs.getFrog().moveDown();
+                        case ArrowRight -> gs.getFrog().moveRight();
+                        case ArrowLeft -> gs.getFrog().moveLeft();
+                        default -> {
+                            System.out.println("Quitting");
+                            continueReadingInput = false;
+                            playAgain = false;
+                            terminal.close();
+                        }
+                    }
+                }
+
+                hideLastPosition(gs.getFrog().getPrevPosition(), terminal);
+                terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
+                terminal.putCharacter(gs.getFrogModel());
+                drawRoadLines(terminal, terminalWidth, gs.getFrogY());
+                gs.hasCrashed(cars);
+                terminal.flush();
 
 //            TEXT VID VINST
-            if (gs.getFrog().hasReachedGoal()) {
-                printWinMessage(terminal);
-                break;
-            }
+                if (gs.getFrog().hasReachedGoal()) {
+                    printWinMessage(terminal);
+                    playAgain = playAgain(terminal);
+                    break;
+                }
 
 //            TEXT OM GRODAN DÖTT (stackars groda....)
-            if (gs.isAlive()) {
-                printflatMessage(terminal, gs);
-                break;
+                if (gs.isAlive()) {
+                    printflatMessage(terminal, gs);
+                    playAgain = playAgain(terminal);
+                    break;
+                }
             }
-        }
+        } while (playAgain);
     }
 
     public static void printWinMessage(Terminal terminal) throws IOException {
@@ -215,29 +222,31 @@ public class Main {
 
         terminal.flush();
     }
-//
-//    public static boolean playAgain(KeyStroke keyStroke, Terminal terminal) throws IOException {
-//        boolean playAgain = false;
-//
-//        String line = "Play again? y/n";
-//        char[] charArray = line.toCharArray();
-//        for (int i = 0; i < line.length(); i++) {
-//            charArray[i] = line.charAt(i);
-//            terminal.setCursorPosition(43 + i, 26);
-//            terminal.putCharacter(charArray[i]);
-//            terminal.flush();
-//        }
-//        KeyStroke keyStroke;
-//        keyStroke = terminal.pollInput();
-//        switch (keyStroke.getKeyType().toString()) {
-//            case "y" -> playAgain = true;
-//            case "n" -> {
-//                playAgain = false;
-//                terminal.close();
-//            }
-//        }
-//        return playAgain;
-//    }
+
+    public static boolean playAgain(Terminal terminal) throws IOException {
+        boolean playAgain = false;
+        String line = "Play again?  y/n";
+        char[] charArray = line.toCharArray();
+        for (int i = 0; i < line.length(); i++) {
+            charArray[i] = line.charAt(i);
+            terminal.setCursorPosition(41 + i, 26);
+            terminal.putCharacter(charArray[i]);
+            terminal.flush();
+        }
+        KeyStroke keyStroke = terminal.pollInput();
+        while (!(Objects.equals(keyStroke, KeyStroke.fromString("y"))) || !(Objects.equals(keyStroke, KeyStroke.fromString("n")))) {
+            keyStroke = terminal.pollInput();
+            if ((Objects.equals(keyStroke, KeyStroke.fromString("y")))) {
+                playAgain = true;
+                break;
+            } else if ((Objects.equals(keyStroke, KeyStroke.fromString("n")))) {
+                System.out.println("Exiting...");
+                terminal.close();
+                break;
+            }
+        }
+        return playAgain;
+    }
 }
 
 
