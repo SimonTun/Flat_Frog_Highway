@@ -9,7 +9,6 @@ public class Car {
     public Car(Position position, char model) {
         this.position = position;
         this.model = model;
-
     }
 
     public Car(CarDirection direction, char model) {
@@ -43,7 +42,7 @@ public class Car {
 
     public Position startPosition(CarDirection direction) {
 
-        if (direction.equals(CarDirection.RIGHT)) {
+        if (direction.equals(CarDirection.LEFT)) {
             return new Position(100, ThreadLocalRandom.current().nextInt(11, 24));
 
         }
