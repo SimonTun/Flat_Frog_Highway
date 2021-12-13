@@ -30,25 +30,13 @@ public class Main {
 //      Placera ut groda och bil
         drawCharacters(cars, gs.getFrog(), terminal);
 
-        //Create array
-        Position[] roadSideDown = new Position[terminalWidth];
-        Position[] roadSideUp = new Position[terminalWidth];
-        for (int i = 0; i < terminalWidth; i++) {
-            roadSideUp[i] = new Position(i, 10);
-            roadSideDown[i] = new Position(i, 40);
-        }
+//      Skapa väg
+        Position[] roadSideDown = createRoadLine(terminalWidth, 40);
+        Position[] roadSideUp = createRoadLine(terminalWidth,10);
 
         //Print vägen
-        final char sideline = '-';
-        for (Position p : roadSideDown) {
-            terminal.setCursorPosition(p.getX(), p.getY());
-            terminal.putCharacter(sideline);
-        }
-        terminal.flush();
-        for (Position p : roadSideUp) {
-            terminal.setCursorPosition(p.getX(), p.getY());
-            terminal.putCharacter(sideline);
-        }
+        printRoadSide(roadSideDown, terminal);
+        printRoadSide(roadSideUp, terminal);
         terminal.flush();
 
 //      MEGALOOPENS BÖRJAN
@@ -91,6 +79,8 @@ public class Main {
                 hideLastPosition(gs.getFrog().getPrevPosition(), terminal);
                 terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
                 terminal.putCharacter(gs.getFrogModel());
+//                printRoadSide(roadSideDown, terminal);
+//                printRoadSide(roadSideUp, terminal);
                 terminal.flush();
             }
 
@@ -179,6 +169,22 @@ public class Main {
             terminal.setCursorPosition(frog.getPosition().getX(), frog.getPosition().getY());
             terminal.putCharacter(frog.getModel());
 
+        }
+    }
+
+    public static Position[] createRoadLine(int terminalWidth, int yValue) {
+        Position[] roadSide = new Position[terminalWidth];
+        for (int i = 0; i < terminalWidth; i++) {
+            roadSide[i] = new Position(i, yValue);
+        }
+        return roadSide;
+    }
+
+    public static void printRoadSide(Position[] array, Terminal terminal) throws IOException {
+        final char sideline = '-';
+        for (Position p : array) {
+            terminal.setCursorPosition(p.getX(), p.getY());
+            terminal.putCharacter(sideline);
         }
     }
 
