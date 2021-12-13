@@ -5,7 +5,6 @@ import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -25,23 +24,14 @@ public class Main {
         gs.setTerminalHeight(terminalHeight);
         gs.setTerminalWidth(terminalWidth);
 
-        // Car direction bestäms (flytta in i Car alt GameState senare??
+        // Car direction bestäms
         List<Car> cars = gs.getCars();
         setDirectionForCars(cars);
 
 //      Placera ut groda, bilar och sidlinjer
         drawCharacters(cars, gs.getFrog(), terminal);
         drawRoadLines(terminal, terminalWidth, gs.getFrogY());
-
-
-//        //Sparar denna loop för att krashrutin skall funka
-//        Position[] roadSideDown = new Position[terminalWidth];
-        Position[] roadSideUp = new Position[terminalWidth];
-        for (int i = 0; i < terminalWidth; i++) {
-            roadSideUp[i] = new Position(i, 10);
-//            roadSideDown[i] = new Position(i, 40);
-        }
-//        terminal.flush();
+        terminal.flush();
 
 //      MEGALOOPENS BÖRJAN
         boolean continueReadingInput = true;
@@ -81,56 +71,51 @@ public class Main {
                     }
                 }
             }
+
             hideLastPosition(gs.getFrog().getPrevPosition(), terminal);
             terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
             terminal.putCharacter(gs.getFrogModel());
             drawRoadLines(terminal, terminalWidth, gs.getFrogY());
             gs.hasCrashed(cars);
-            flatMessage(terminal, gs);
             terminal.flush();
 
 //            TEXT VID VINST
             if (gs.getFrog().hasReachedGoal()) {
-                String line = "*** YOU MADE IT! ***";
-                char[] charArray = line.toCharArray();
-                for (int i = 0; i < line.length(); i++) {
-                    charArray[i] = line.charAt(i);
-                    terminal.setCursorPosition(40 + i, 25);
-                    terminal.putCharacter(charArray[i]);
-                    terminal.flush();
-                }
+                printWinMessage(terminal);
                 break;
             }
+
 //            TEXT OM GRODAN DÖTT (stackars groda....)
             if (!gs.isAlive()) {
-                String line = "*** YOU GOT FLAT ***";
-                char[] charArray = line.toCharArray();
-                for (int i = 0; i < line.length(); i++) {
-                    charArray[i] = line.charAt(i);
-                    terminal.setCursorPosition(50 + i, 50);
-                    terminal.putCharacter(charArray[i]);
-                    terminal.flush();
-                }
+                printflatMessage(terminal, gs);
+                break;
             }
         }
     }
 
-    public static void flatMessage(Terminal terminal, GameState gs) throws IOException {
+    public static void printWinMessage(Terminal terminal) throws IOException {
+        String line = "*** YOU MADE IT! ***";
+        char[] charArray = line.toCharArray();
+        for (int i = 0; i < line.length(); i++) {
+            charArray[i] = line.charAt(i);
+            terminal.setCursorPosition(39 + i, 25);
+            terminal.putCharacter(charArray[i]);
+            terminal.flush();
+        }
+    }
+
+    public static void printflatMessage(Terminal terminal, GameState gs) throws IOException {
         if (!gs.isAlive()) {
             String line = "*** YOU GOT FLAT ***";
             char[] charArray = line.toCharArray();
             for (int i = 0; i < line.length(); i++) {
                 charArray[i] = line.charAt(i);
-                terminal.setCursorPosition(50 + i, 50);
+                terminal.setCursorPosition(39 + i, 25);
                 terminal.putCharacter(charArray[i]);
                 terminal.flush();
             }
         }
     }
-
-//        playAgain = playAgain(terminal);
-//        } while (playAgain);
-//    }
 
     public static void moveCars(List<Car> cars, Terminal terminal) throws IOException {
         for (Car car : cars) {
@@ -201,7 +186,7 @@ public class Main {
         }
     }
 
-    public static void drawRoadLines(Terminal terminal, int terminalWidth, int frogY) throws IOException{
+    public static void drawRoadLines(Terminal terminal, int terminalWidth, int frogY) throws IOException {
 
         final char sideLine = '=';
         final char midLine = '-';
@@ -217,21 +202,22 @@ public class Main {
         }
 
         //Print vägen
-        for (int i = 0; i <terminalWidth; i++) {
+        for (int i = 0; i < terminalWidth; i++) {
             if (frogY == roadSideUp[i].getY() || frogY == middleLine[i].getY() || frogY == roadSideDown[i].getY()) {
                 continue;
             }
-                terminal.setCursorPosition(roadSideUp[i].getX(), roadSideUp[i].getY());
-                terminal.putCharacter(sideLine);
-                terminal.setCursorPosition(middleLine[i].getX(), middleLine[i].getY());
-                terminal.putCharacter(midLine);
-                terminal.setCursorPosition(roadSideDown[i].getX(), roadSideDown[i].getY());
-                terminal.putCharacter(sideLine);
-            }
+            terminal.setCursorPosition(roadSideUp[i].getX(), roadSideUp[i].getY());
+            terminal.putCharacter(sideLine);
+            terminal.setCursorPosition(middleLine[i].getX(), middleLine[i].getY());
+            terminal.putCharacter(midLine);
+            terminal.setCursorPosition(roadSideDown[i].getX(), roadSideDown[i].getY());
+            terminal.putCharacter(sideLine);
+        }
 
 
-            terminal.flush();
+        terminal.flush();
     }
+//
 //    public static boolean playAgain(KeyStroke keyStroke, Terminal terminal) throws IOException {
 //        boolean playAgain = false;
 //
