@@ -5,7 +5,6 @@ import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -22,8 +21,6 @@ public class Main {
         terminal.setCursorVisible(false);
 
         GameState gs = new GameState();
-        gs.setTerminalHeight(terminalHeight);
-        gs.setTerminalWidth(terminalWidth);
 
         // Car direction bestäms (flytta in i Car alt GameState senare??
         List<Car> cars = gs.getCars();
@@ -102,7 +99,7 @@ public class Main {
                 break;
             }
 //            TEXT OM GRODAN DÖTT (stackars groda....)
-            if (!gs.isAlive()) {
+            if (gs.isAlive()) {
                 String line = "*** YOU GOT FLAT ***";
                 char[] charArray = line.toCharArray();
                 for (int i = 0; i < line.length(); i++) {
@@ -116,7 +113,7 @@ public class Main {
     }
 
     public static void flatMessage(Terminal terminal, GameState gs) throws IOException {
-        if (!gs.isAlive()) {
+        if (gs.isAlive()) {
             String line = "*** YOU GOT FLAT ***";
             char[] charArray = line.toCharArray();
             for (int i = 0; i < line.length(); i++) {

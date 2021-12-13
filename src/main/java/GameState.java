@@ -11,12 +11,11 @@ public class GameState {
     private Car car;
     private List<Car> cars;
     private final char clock = '\u23F2';     // Symbol vid kommande tidtagning (highscore)
-    private int terminalWidth;
-    private int terminalHeight;
+    private char model = '\u2180';
 
     public GameState() {
         this.frog = new Frog(new Position(50, 50), '\uFE61');
-        this.car = new Car(randomStartPosition(), '\u2180');
+        this.car = new Car(randomStartDirection(), model);
         this.cars = createCars();
     }
 
@@ -60,33 +59,16 @@ public class GameState {
         return car.getModel();
     }
 
-    public void setTerminalWidth(int terminalWidth) {
-        this.terminalWidth = terminalWidth;
-    }
-
-    public void setTerminalHeight(int terminalHeight) {
-        this.terminalHeight = terminalHeight;
-    }
-// Returnerar true om grodan och bilen är på samma position
+    // Returnerar true om grodan och bilen är på samma position
 
     public void hasCrashed(List<Car> cars) {
 
-        frog.hasCrashed(cars);               // Borde fungera......
+        frog.hasCrashed(cars);
     }
 
     public boolean isAlive() {
-        return frog.isAlive();
+        return !frog.isAlive();
     }
-
-        //      Gammal kod
-//    public boolean collision() {
-//        boolean hasCrashed = false;
-//        if (this.frog.getPosition().getX() == this.car.getPosition().getX() &&
-//            this.frog.getPosition().getY() == this.car.getPosition().getY()) {
-//            hasCrashed = true;
-//        }
-//        return hasCrashed;
-//    }
 
     // Returnerar randomiserad startposition för Car
 
@@ -100,18 +82,18 @@ public class GameState {
 
     public CarDirection randomStartDirection() {
         CarDirection[] leftRight = {CarDirection.LEFT, CarDirection.RIGHT};
-        CarDirection x = leftRight[ThreadLocalRandom.current().nextInt(2)];
-        return x;
+        return leftRight[ThreadLocalRandom.current().nextInt(2)];
     }
 
     public List<Car> createCars() {
         List<Car> cars = new ArrayList<>();
-        cars.add(new Car(randomStartPosition(),'C'));
-        cars.add(new Car(randomStartPosition(),'A'));
-        cars.add(new Car(randomStartPosition(),'R'));
-        cars.add(new Car(randomStartPosition(),'C'));
-        cars.add(new Car(randomStartPosition(),'A'));
-        cars.add(new Car(randomStartPosition(),'R'));
+        cars.add(new Car(randomStartDirection(), model));
+        cars.add(new Car(randomStartDirection(), model));
+        cars.add(new Car(randomStartDirection(), model));
+        cars.add(new Car(randomStartDirection(), model));
+        cars.add(new Car(randomStartDirection(), model));
+        cars.add(new Car(randomStartDirection(), model));
+        cars.add(new Car(randomStartDirection(), model));
         return cars;
     }
 
