@@ -4,6 +4,8 @@ import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -85,6 +87,22 @@ public class Main {
                 drawRoadLines(terminal, terminalWidth, gs.getFrogY());
                 gs.hasCrashed(cars);
                 terminal.flush();
+
+//                if (cars.size() >= 50) {
+//                    for (int i = 0; i < cars.size(); i++) {
+//                        CarDirection cd = cars.get(i).getDirection();
+//                        int xValue = cars.get(i).getPosition().getX();
+//                        int yValue = cars.get(i).getPosition().getY();
+//
+//                        if (cd == CarDirection.LEFT && xValue == 1) {
+//                            terminal.setCursorPosition(1, yValue);
+//                            terminal.putCharacter(' ');
+//                        } else if (cd == CarDirection.RIGHT && xValue == 100) {
+//                            terminal.setCursorPosition(100, yValue);
+//                            terminal.putCharacter(' ');
+//                        }
+//                    }
+//                }
 
 //            TEXT VID VINST
                 if (gs.getFrog().hasReachedGoal()) {
