@@ -44,17 +44,17 @@ public class Main {
                 gs.getFrog().setPrevPosition(new Position(frogOldX, frogOldY));
 
                 index++;
-                if (index % 20 == 0) {                     //Timer för hur ofta bilarna ska röra på sig (hastighet)
+                if (index % 10 == 0) {                     //Timer för hur ofta bilarna ska röra på sig (hastighet)
                     moveCarsTest(cars, terminal, 'C');
                 }
-                if (index % 10 == 0) {
+                if (index % 7 == 0) {
                     moveCarsTest(cars, terminal, 'A');
                 }
-                if (index % 7 == 0) {
+                if (index % 4 == 0) {
                     moveCarsTest(cars, terminal, 'R');
                 }
-                if (counter % 250 == 0) {                 //Timer för hur ofta en ny bil ska skapas/spawna.  30/300 känns bra!
-                    for (int i = 0; i < 9; i++) {
+                if (counter % 150 == 0) {                 //Timer för hur ofta en ny bil ska skapas/spawna.  30/300 känns bra!
+                    for (int i = 0; i < 17; i++) {
                         gs.spawnAnotherCar(i, terminal);
                     }
                 }

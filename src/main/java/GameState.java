@@ -55,13 +55,21 @@ public class GameState {
     public List<Car> createCars() {
         List<Car> cars = new ArrayList<>();
         cars.add(new Car(randomStartDirection(),'C'));
-        cars.add(new Car(randomStartDirection(),'A'));
-        cars.add(new Car(randomStartDirection(),'R'));
+        cars.add(new Car(randomStartDirection(),'C'));
+        cars.add(new Car(randomStartDirection(),'C'));
+        cars.add(new Car(randomStartDirection(),'C'));
+        cars.add(new Car(randomStartDirection(),'C'));
+        cars.add(new Car(randomStartDirection(),'C'));
         cars.add(new Car(randomStartDirection(),'C'));
         cars.add(new Car(randomStartDirection(),'A'));
-        cars.add(new Car(randomStartDirection(),'R'));
-        cars.add(new Car(randomStartDirection(),'C'));
         cars.add(new Car(randomStartDirection(),'A'));
+        cars.add(new Car(randomStartDirection(),'A'));
+        cars.add(new Car(randomStartDirection(),'A'));
+        cars.add(new Car(randomStartDirection(),'R'));
+        cars.add(new Car(randomStartDirection(),'A'));
+        cars.add(new Car(randomStartDirection(),'R'));
+        cars.add(new Car(randomStartDirection(),'R'));
+        cars.add(new Car(randomStartDirection(),'R'));
         cars.add(new Car(randomStartDirection(),'R'));
         return cars;
     }
