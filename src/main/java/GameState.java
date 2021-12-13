@@ -68,14 +68,24 @@ public class GameState {
     }
 // Returnerar true om grodan och bilen är på samma position
 
-    public boolean collision() {
-        boolean hasCrashed = false;
-        if (this.frog.getPosition().getX() == this.car.getPosition().getX() &&
-            this.frog.getPosition().getY() == this.car.getPosition().getY()) {
-            hasCrashed = true;
-        }
-        return hasCrashed;
+    public void hasCrashed(List<Car> cars) {
+
+        frog.hasCrashed(cars);               // Borde fungera......
     }
+
+    public boolean isAlive() {
+        return frog.isAlive();
+    }
+
+        //      Gammal kod
+//    public boolean collision() {
+//        boolean hasCrashed = false;
+//        if (this.frog.getPosition().getX() == this.car.getPosition().getX() &&
+//            this.frog.getPosition().getY() == this.car.getPosition().getY()) {
+//            hasCrashed = true;
+//        }
+//        return hasCrashed;
+//    }
 
     // Returnerar randomiserad startposition för Car
 
