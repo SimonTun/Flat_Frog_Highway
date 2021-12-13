@@ -14,7 +14,7 @@ public class GameState {
     private char model = '\u2180';
 
     public GameState() {
-        this.frog = new Frog(new Position(50, 50), '\uFE61');
+        this.frog = new Frog(new Position(50, 50), '\u26c7');
         this.car = new Car(randomStartDirection(), model);
         this.cars = createCars();
     }
@@ -57,12 +57,19 @@ public class GameState {
         cars.add(new Car(randomStartDirection(),'C'));
         cars.add(new Car(randomStartDirection(),'A'));
         cars.add(new Car(randomStartDirection(),'R'));
+        cars.add(new Car(randomStartDirection(),'S'));
         cars.add(new Car(randomStartDirection(),'C'));
         cars.add(new Car(randomStartDirection(),'A'));
         cars.add(new Car(randomStartDirection(),'R'));
+        cars.add(new Car(randomStartDirection(),'S'));
         cars.add(new Car(randomStartDirection(),'C'));
         cars.add(new Car(randomStartDirection(),'A'));
         cars.add(new Car(randomStartDirection(),'R'));
+        cars.add(new Car(randomStartDirection(),'S'));
+        cars.add(new Car(randomStartDirection(),'C'));
+        cars.add(new Car(randomStartDirection(),'A'));
+        cars.add(new Car(randomStartDirection(),'R'));
+        cars.add(new Car(randomStartDirection(),'S'));
         return cars;
     }
 

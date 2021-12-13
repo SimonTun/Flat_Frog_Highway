@@ -39,10 +39,11 @@ public class Main {
             terminal.flush();
 
 //      MEGALOOPENS BÖRJAN
-        boolean continueReadingInput = true;
-        int counter = 0;
-        int index = 0;
-        int currentHighscore = 0;
+            boolean continueReadingInput = true;
+            int initCounter = 0;
+            int counter = 0;
+            int index = 0;
+            int currentHighscore = 0;
 
             while (continueReadingInput) {
                 printStaticHighscore(terminal, highscore);
@@ -52,17 +53,20 @@ public class Main {
 
                 index++;
                 currentHighscore++;
-                if (index % 20 == 0) {                     //Timer för hur ofta bilarna ska röra på sig (hastighet)
+                if (index % 9 == 0) {                     //Timer för hur ofta bilarna ska röra på sig (hastighet)
                     moveCarsTest(cars, terminal, 'C');
                 }
-                if (index % 10 == 0) {
+                if (index % 7 == 0) {
                     moveCarsTest(cars, terminal, 'A');
                 }
-                if (index % 7 == 0) {
+                if (index % 5 == 0) {
                     moveCarsTest(cars, terminal, 'R');
                 }
-                if (counter % 250 == 0) {                 //Timer för hur ofta en ny bil ska skapas/spawna.  30/300 känns bra!
-                    for (int i = 0; i < 9; i++) {
+                if (index % 3 == 0) {
+                    moveCarsTest(cars, terminal, 'S');
+                }
+                if (counter % 100 == 0) {                 //Timer för hur ofta en ny bil ska skapas/spawna.  9/7/5/3/100 = rolig svårighetsgrad!
+                    for (int i = 0; i < 18; i++) {
                         gs.spawnAnotherCar(i, terminal);
                     }
                 }
@@ -72,20 +76,25 @@ public class Main {
                 counter++;
 
 //          KEYSTROKE-LOOPEN BÖRJAR HÄR
-                if (keyStroke != null) {
-                    switch (keyStroke.getKeyType()) {
-                        case ArrowUp -> gs.getFrog().moveUp();
-                        case ArrowDown -> gs.getFrog().moveDown();
-                        case ArrowRight -> gs.getFrog().moveRight();
-                        case ArrowLeft -> gs.getFrog().moveLeft();
-                        default -> {
-                            System.out.println("Quitting");
-                            continueReadingInput = false;
-                            playAgain = false;
-                            terminal.close();
+
+                if (initCounter > 300) {
+                    if (keyStroke != null) {
+                        switch (keyStroke.getKeyType()) {
+                            case ArrowUp -> gs.getFrog().moveUp();
+                            case ArrowDown -> gs.getFrog().moveDown();
+                            case ArrowRight -> gs.getFrog().moveRight();
+                            case ArrowLeft -> gs.getFrog().moveLeft();
+                            default -> {
+                                System.out.println("Quitting");
+                                continueReadingInput = false;
+                                playAgain = false;
+                                terminal.close();
+                            }
                         }
                     }
                 }
+
+                initCounter++;
 
                 hideLastPosition(gs.getFrog().getPrevPosition(), terminal);
                 terminal.setForegroundColor(TextColor.ANSI.GREEN);
@@ -96,6 +105,10 @@ public class Main {
                 gs.hasCrashed(cars);
                 terminal.flush();
 
+                if (initCounter < 350) {
+                    countdown(initCounter, terminal, terminalWidth, gs.getFrogY());
+                }
+
 //            TEXT VID VINST
                 if (gs.getFrog().hasReachedGoal()) {
                     printWinMessage(terminal);
@@ -104,15 +117,12 @@ public class Main {
                         printHighscore(terminal, currentHighscore);
                         highscore = currentHighscore;
                         currentHighscore = 0;
-
-                    } else if (highscore == 0){
+                    } else if (highscore == 0) {
                         printYourScore(terminal, currentHighscore);
                         highscore = currentHighscore;
-
-                    } else if (currentHighscore > highscore){
+                    } else if (currentHighscore > highscore) {
                         printYourScore(terminal, currentHighscore);
                     }
-
 
                     playAgain = playAgain(terminal);
                     break;
@@ -141,11 +151,11 @@ public class Main {
     }
 
     public static void printHighscore(Terminal terminal, long highscore) throws IOException {
-        String line = "*** New time record: "+highscore + " ***";
+        String line = "*** New time record: " + highscore + " ***";
         char[] charArray = line.toCharArray();
         for (int i = 0; i < line.length(); i++) {
             charArray[i] = line.charAt(i);
-            terminal.setCursorPosition(39 + i, 20);
+            terminal.setCursorPosition(36 + i, 20);
             terminal.setForegroundColor(TextColor.ANSI.CYAN);
             terminal.putCharacter(charArray[i]);
             terminal.flush();
@@ -153,11 +163,11 @@ public class Main {
     }
 
     public static void printYourScore(Terminal terminal, long highscore) throws IOException {
-        String line = "*** Your time was: "+highscore + " ***";
+        String line = "*** Your time was: " + highscore + " ***";
         char[] charArray = line.toCharArray();
         for (int i = 0; i < line.length(); i++) {
             charArray[i] = line.charAt(i);
-            terminal.setCursorPosition(39 + i, 20);
+            terminal.setCursorPosition(36 + i, 20);
             terminal.setForegroundColor(TextColor.ANSI.CYAN);
             terminal.putCharacter(charArray[i]);
             terminal.flush();
@@ -188,6 +198,10 @@ public class Main {
                 terminal.setCursorPosition(39 + i, 25);
                 terminal.setForegroundColor(TextColor.ANSI.RED);
                 terminal.putCharacter(charArray[i]);
+                terminal.setCursorPosition(gs.getFrogX(), gs.getFrogY());
+                terminal.setForegroundColor(TextColor.ANSI.RED);
+                terminal.putCharacter('\u2620');
+                terminal.flush();
                 terminal.flush();
             }
         }
@@ -204,12 +218,11 @@ public class Main {
 
                 CarDirection cd = car.getDirection();
                 if (cd == CarDirection.LEFT) {
-                        newX = (car.getPosition().getX()) - 1;
-                        car.getPosition().setX(newX);
-                    }
-                 else if (cd == CarDirection.RIGHT) {
-                        newX = (car.getPosition().getX() + 1);
-                        car.getPosition().setX(newX);
+                    newX = (car.getPosition().getX()) - 1;
+                    car.getPosition().setX(newX);
+                } else if (cd == CarDirection.RIGHT) {
+                    newX = (car.getPosition().getX() + 1);
+                    car.getPosition().setX(newX);
                 }
                 terminal.setCursorPosition(oldCarX, oldCarY);
                 terminal.putCharacter(' ');
@@ -263,7 +276,6 @@ public class Main {
             middleLine[i] = new Position(i, 25);
             roadSideDown[i] = new Position(i, 40);
         }
-
         //Print vägen
         for (int i = 0; i < terminalWidth; i++) {
             if (frogY == roadSideUp[i].getY() || frogY == middleLine[i].getY() || frogY == roadSideDown[i].getY()) {
@@ -276,8 +288,6 @@ public class Main {
             terminal.setCursorPosition(roadSideDown[i].getX(), roadSideDown[i].getY());
             terminal.putCharacter(sideLine);
         }
-
-
         terminal.flush();
     }
 
@@ -304,6 +314,49 @@ public class Main {
             }
         }
         return playAgain;
+    }
+
+    public static void countdown(int initCounter, Terminal terminal,int terminalWidth, int frogY) throws IOException {
+        if (initCounter < 100) {
+            terminal.setCursorPosition(50, 24);
+            terminal.setForegroundColor(TextColor.ANSI.YELLOW);
+            terminal.putCharacter('3');
+            terminal.setForegroundColor(TextColor.ANSI.WHITE);
+        }
+        if (initCounter > 100) {
+            terminal.setCursorPosition(50, 24);
+            terminal.setForegroundColor(TextColor.ANSI.YELLOW);
+            terminal.putCharacter('2');
+            terminal.setForegroundColor(TextColor.ANSI.WHITE);
+
+        }
+        if (initCounter > 200) {
+            terminal.setCursorPosition(50, 24);
+            terminal.setForegroundColor(TextColor.ANSI.YELLOW);
+            terminal.putCharacter('1');
+            terminal.setForegroundColor(TextColor.ANSI.WHITE);
+        }
+        if (initCounter > 300 && initCounter < 320) {
+            String line = "GO!!";
+            char[] charArray = line.toCharArray();
+            for (int i = 0; i < line.length(); i++) {
+                charArray[i] = line.charAt(i);
+                terminal.setCursorPosition(50 + i, 24);
+                terminal.setForegroundColor(TextColor.ANSI.GREEN);
+                terminal.putCharacter(charArray[i]);
+                terminal.setForegroundColor(TextColor.ANSI.WHITE);
+            }
+        }
+        if (initCounter > 320) {
+            String line = "    ";
+            char[] charArray = line.toCharArray();
+            for (int i = 0; i < line.length(); i++) {
+                charArray[i] = line.charAt(i);
+                terminal.setCursorPosition(50 + i, 24);
+                terminal.putCharacter(charArray[i]);
+            }
+        }
+        terminal.flush();
     }
 }
 
