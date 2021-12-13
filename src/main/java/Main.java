@@ -108,7 +108,7 @@ public class Main {
             char[] charArray = line.toCharArray();
             for (int i = 0; i < line.length(); i++) {
                 charArray[i] = line.charAt(i);
-                terminal.setCursorPosition(50 + i, 50);
+                terminal.setCursorPosition(39 + i, 25);
                 terminal.putCharacter(charArray[i]);
                 terminal.flush();
             }
