@@ -60,6 +60,9 @@ public class GameState {
         cars.add(new Car(randomStartDirection(),'C'));
         cars.add(new Car(randomStartDirection(),'A'));
         cars.add(new Car(randomStartDirection(),'R'));
+        cars.add(new Car(randomStartDirection(),'C'));
+        cars.add(new Car(randomStartDirection(),'A'));
+        cars.add(new Car(randomStartDirection(),'R'));
         return cars;
     }
 

@@ -3,7 +3,6 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -45,11 +44,17 @@ public class Main {
                 gs.getFrog().setPrevPosition(new Position(frogOldX, frogOldY));
 
                 index++;
-                if (index % 30 == 0) {                     //Timer för hur ofta bilarna ska röra på sig (hastighet)
-                    moveCars(cars, terminal);
+                if (index % 20 == 0) {                     //Timer för hur ofta bilarna ska röra på sig (hastighet)
+                    moveCarsTest(cars, terminal, 'C');
                 }
-                if (counter % 300 == 0) {                 //Timer för hur ofta en ny bil ska skapas/spawna.  30/300 känns bra!
-                    for (int i = 0; i < 6; i++) {
+                if (index % 10 == 0) {
+                    moveCarsTest(cars, terminal, 'A');
+                }
+                if (index % 7 == 0) {
+                    moveCarsTest(cars, terminal, 'R');
+                }
+                if (counter % 250 == 0) {                 //Timer för hur ofta en ny bil ska skapas/spawna.  30/300 känns bra!
+                    for (int i = 0; i < 9; i++) {
                         gs.spawnAnotherCar(i, terminal);
                     }
                 }
@@ -122,45 +127,32 @@ public class Main {
         }
     }
 
-    public static void moveCars(List<Car> cars, Terminal terminal) throws IOException {
+    public static void moveCarsTest(List<Car> cars, Terminal terminal, char model) throws IOException {
         for (Car car : cars) {
-            int newX = 0;
+            if (car.getModel() == model) {
+                int newX = 0;
 
-            int oldCarX = car.getPosition().getX();
-            int oldCarY = car.getPosition().getY();
-            car.setPrevPosition(new Position(oldCarX, oldCarY));
+                int oldCarX = car.getPosition().getX();
+                int oldCarY = car.getPosition().getY();
+                car.setPrevPosition(new Position(oldCarX, oldCarY));
 
-            CarDirection cd = car.getDirection();
-            if (cd == CarDirection.LEFT) {
-                if (car.getModel() == 'C') {
-                    newX = (car.getPosition().getX()) - 1;
-                    car.getPosition().setX(newX);
-                } else if (car.getModel() == 'A') {
-                    newX = (car.getPosition().getX()) - 2;
-                    car.getPosition().setX(newX);
-                } else {
-                    newX = (car.getPosition().getX()) - 3;
-                    car.getPosition().setX(newX);
+                CarDirection cd = car.getDirection();
+                if (cd == CarDirection.LEFT) {
+                        newX = (car.getPosition().getX()) - 1;
+                        car.getPosition().setX(newX);
+                    }
+                 else if (cd == CarDirection.RIGHT) {
+                        newX = (car.getPosition().getX() + 1);
+                        car.getPosition().setX(newX);
                 }
-            } else if (cd == CarDirection.RIGHT) {
-                if (car.getModel() == 'C') {
-                    newX = (car.getPosition().getX() + 1);
-                    car.getPosition().setX(newX);
-                } else if (car.getModel() == 'A') {
-                    newX = (car.getPosition().getX() + 2);
-                    car.getPosition().setX(newX);
-                } else {
-                    newX = (car.getPosition().getX() + 3);
-                    car.getPosition().setX(newX);
-                }
+                terminal.setCursorPosition(oldCarX, oldCarY);
+                terminal.putCharacter(' ');
+
+                car.setPosition(car.getPosition());
+                terminal.setCursorPosition(newX, car.getPosition().getY());
+                terminal.putCharacter(car.getModel());
+                terminal.flush();
             }
-            terminal.setCursorPosition(oldCarX, oldCarY);
-            terminal.putCharacter(' ');
-
-            car.setPosition(car.getPosition());
-            terminal.setCursorPosition(newX, car.getPosition().getY());
-            terminal.putCharacter(car.getModel());
-            terminal.flush();
         }
     }
 
