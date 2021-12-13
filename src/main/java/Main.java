@@ -103,7 +103,7 @@ public class Main {
     }
 
     public static void printflatMessage(Terminal terminal, GameState gs) throws IOException {
-        if (!gs.isAlive()) {
+        if (gs.isAlive()) {
             String line = "*** YOU GOT FLAT ***";
             char[] charArray = line.toCharArray();
             for (int i = 0; i < line.length(); i++) {
