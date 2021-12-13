@@ -28,14 +28,6 @@ public class GameState {
         return frog;
     }
 
-    public void setFrog() {
-        this.frog = frog;
-    }
-
-    public Car getCar() {
-        return car;
-    }
-
     public int getFrogX() {
         return frog.getPosition().getX();
     }
@@ -48,18 +40,6 @@ public class GameState {
         return frog.getModel();
     }
 
-    public int getCarX() {
-        return car.getPosition().getX();
-    }
-
-    public int getCarY() {
-        return car.getPosition().getY();
-    }
-
-    public char getCarModel() {
-        return car.getModel();
-    }
-
     public void setTerminalWidth(int terminalWidth) {
         this.terminalWidth = terminalWidth;
     }
@@ -67,28 +47,14 @@ public class GameState {
     public void setTerminalHeight(int terminalHeight) {
         this.terminalHeight = terminalHeight;
     }
-// Returnerar true om grodan och bilen är på samma position
 
     public void hasCrashed(List<Car> cars) {
-
-        frog.hasCrashed(cars);               // Borde fungera......
+        frog.hasCrashed(cars);
     }
 
     public boolean isAlive() {
         return frog.isAlive();
     }
-
-        //      Gammal kod
-//    public boolean collision() {
-//        boolean hasCrashed = false;
-//        if (this.frog.getPosition().getX() == this.car.getPosition().getX() &&
-//            this.frog.getPosition().getY() == this.car.getPosition().getY()) {
-//            hasCrashed = true;
-//        }
-//        return hasCrashed;
-//    }
-
-    // Returnerar randomiserad startposition för Car
 
     public Position randomStartPosition() {
         int[] leftRight = {1, 100};
@@ -96,7 +62,6 @@ public class GameState {
         int y = ThreadLocalRandom.current().nextInt(11, 40);
         return new Position(x, y);
     }
-    // Returnerar randomiserad startriktning för Car
 
     public CarDirection randomStartDirection() {
         CarDirection[] leftRight = {CarDirection.LEFT, CarDirection.RIGHT};
@@ -114,7 +79,6 @@ public class GameState {
         cars.add(new Car(randomStartPosition(),'R'));
         return cars;
     }
-
 
     public void spawnAnotherCar(int indexNumber, Terminal terminal) throws IOException {      //indexNumber syftar på indexen för bilen vars rad vi vill skapa den nya bilen på. indexNumber = 0 "klonar" bil 'D', 1 klonar bil'E' etc
         List<Car> listCars = getCars();

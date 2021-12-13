@@ -17,10 +17,6 @@ public class Car {
         this.position = position;
     }
 
-    public Position getPrevPosition() {
-        return prevPosition;
-    }
-
     public void setPrevPosition(Position prevPosition) {
         this.prevPosition = prevPosition;
     }

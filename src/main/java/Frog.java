@@ -16,10 +16,6 @@ public class Frog {
         return position;
     }
 
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
     public Position getPrevPosition() {
         return prevPosition;
     }
@@ -30,10 +26,6 @@ public class Frog {
 
     public char getModel() {
         return model;
-    }
-
-    public void setModel(char model) {
-        this.model = model;
     }
 
     public boolean isAlive() {
@@ -47,9 +39,7 @@ public class Frog {
     }
 
     public void hasCrashed(List<Car> cars) {
-
         Position frogPos = getPosition();
-
         for (Car car : cars) {
             if (frogPos.equals(car.getPosition())) {
                 isAlive = false;
@@ -76,10 +66,5 @@ public class Frog {
     public void moveLeft() {
         int currentFrogX = this.position.getX();
         position.setX(currentFrogX - 1);
-    }
-
-
-    public void setPrevPosition() {
-        this.prevPosition = prevPosition;
     }
 }
