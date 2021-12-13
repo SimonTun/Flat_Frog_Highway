@@ -39,33 +39,12 @@ public class GameState {
         return frog.getModel();
     }
 
-    public int getCarX() {
-        return car.getPosition().getX();
-    }
-
-    public int getCarY() {
-        return car.getPosition().getY();
-    }
-
-    public char getCarModel() {
-        return car.getModel();
-    }
-
-    // Returnerar true om grodan och bilen är på samma position
-
     public void hasCrashed(List<Car> cars) {
         frog.hasCrashed(cars);
     }
 
     public boolean isAlive() {
         return !frog.isAlive();
-    }
-
-    public Position randomStartPosition() {
-        int[] leftRight = {1, 100};
-        int x = leftRight[ThreadLocalRandom.current().nextInt(2)];
-        int y = ThreadLocalRandom.current().nextInt(11, 40);
-        return new Position(x, y);
     }
 
     public CarDirection randomStartDirection() {
@@ -83,7 +62,6 @@ public class GameState {
         cars.add(new Car(randomStartDirection(),'R'));
         return cars;
     }
-
 
     public void spawnAnotherCar(int indexNumber, Terminal terminal) throws IOException {      //indexNumber syftar på indexen för bilen vars rad vi vill skapa den nya bilen på. indexNumber = 0 "klonar" bil 'D', 1 klonar bil'E' etc
         List<Car> listCars = getCars();

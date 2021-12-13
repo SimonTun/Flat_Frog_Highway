@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-//        boolean playAgain = true;
+        boolean playAgain = true;
 
         int terminalWidth = 100;
         int terminalHeight = 50;
@@ -84,7 +84,7 @@ public class Main {
             }
 
 //            TEXT OM GRODAN DÖTT (stackars groda....)
-            if (!gs.isAlive()) {
+            if (gs.isAlive()) {
                 printflatMessage(terminal, gs);
                 break;
             }
